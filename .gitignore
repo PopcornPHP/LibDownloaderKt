@@ -26,8 +26,6 @@ hs_err_pid*
 .gradle/
 .idea/
 LibDownloader.iml
-app/
-build.gradle
 build/
 gradle.properties
 gradle/

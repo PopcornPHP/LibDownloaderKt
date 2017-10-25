@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">LibHelper</string>
+    <string name="sr_number_main_hint">Номер методички</string>
+    <string name="searchButtonText">Знайти книгу</string>
+
+    <string name="sign_in_welcome">Welcome to DNURT Library</string>
+
+    <string name="action_sign_in">Увійти</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="prompt_library_card">Читацький номер</string>
+    <string name="register_button_text">Зареєструватися</string>
+    <string name="checkLogin">Запам\'ятати ?</string>
+    <string name="authorization_name">Авторизація</string>
+    <string name="prompt_name">Ім\'я</string>
+    <string name="prompt_confirm_password">Підтвердження пароля</string>
+    <string name="prompt_surname">Прізвище</string>
+    <string name="title_activity_register">Реєстрація</string>
+    <string name="prompt_email">Email</string>
+    <string name="title_activity_dictionary">Словник</string>
+    <string name="dictionary_search_field_hint">Слово для перекладу</string>
+    <string name="dictionary_result_hint">Результат перекладу</string>
+    <string name="dictionary_search_button_text">Перекласти</string>
+
+    <string name="dictionary_none_result">Немає результату для %1$s</string>
+    <string name="forgot_password">Забули пароль ?</string>
+    <string name="searchAuthor">Автор</string>
+    <string name="searchYear">Рік видання</string>
+    <string name="searchByKeywords">Ключові слова</string>
+    <string name="search_byname_hint">Назва книги</string>
+    <string name="dict_text_header">Електронний словник ключових слів</string>
+
+    <string-array name="dictionary_translate_direction">
+        <item>rus-eng</item>
+        <item>eng-rus</item>
+        <item>ukr-eng</item>
+        <item>eng-ukr</item>
+    </string-array>
+
+    <string name="title_activity_books_list">Знайдені книги</string>
+    <string name="tv_translations_results">Результат перекладу</string>
+    <string name="main_btn_find">Знайти</string>
+    <string name="menu_download_book">Завантажити книгу</string>
+    <string name="menu_order_book">Замовити книгу</string>
+    <string name="title_activity_order_list">Замовлення</string>
+
+</resources>
