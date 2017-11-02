@@ -26,7 +26,6 @@ class LoginActivity : AppCompatActivity() {
     private var etLibCardNumberText: EditText? = null
     private var etPassword: EditText? = null
 
-
     private var isAuthorized: Boolean = false
 
     private var cardNumber: String? = null
@@ -116,6 +115,7 @@ class LoginActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 Log.i(LOG, "Request Error " + e.toString())
+                showSnackBar("Перевірте інтернет з'єднання", findViewById(R.id.passw_login_form))
                 e.printStackTrace()
             }
 
@@ -140,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.i(LOG, "authorizationError = " + authorizationError!!)
                 }
 
-                preferences!!.savedIsAuthorized = isAuthorized
+                preferences?.savedIsAuthorized = isAuthorized
 
                 if (isAuthorized) {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -154,8 +154,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             } catch (e: JSONException) {
-                Log.i(LOG, "Json Error")
-                finish()
+                Log.i(LOG, "Json Error ${e.message}")
             }
 
         }

@@ -3,8 +3,10 @@ package natus.diit.com.libhelper
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.text.Html
+import android.view.View
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -15,25 +17,31 @@ import javax.net.ssl.*
 
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
+fun showSnackBar(text: String, view: View) {
+    val mySnackbar = Snackbar.make(view,
+            "Перевірте інтернет з'єднання", Snackbar.LENGTH_LONG)
+            .show()
+}
+
 class Preferences : Application {
     val domain = "https://library.diit.edu.ua"
     private lateinit var prefs: SharedPreferences
     private val sharedPrefsFile = "MyPreferences"
 
     var savedLogin: String? = null
-    set(value) {
-        field = value
-        val ed = prefs.edit()
-        ed.putString("login", value)
-        ed.apply()
-    }
+        set(value) {
+            field = value
+            val ed = prefs.edit()
+            ed.putString("login", value)
+            ed.apply()
+        }
     var savedPassword: String? = null
-    set(value) {
-        field = value
-        val ed = prefs.edit()
-        ed.putString("password", value)
-        ed.apply()
-    }
+        set(value) {
+            field = value
+            val ed = prefs.edit()
+            ed.putString("password", value)
+            ed.apply()
+        }
 
     var savedTranslateDirection: String? = null
         set(value) {
@@ -53,20 +61,20 @@ class Preferences : Application {
         }
 
     var savedReceivedCookie: String? = null
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        val ed = prefs.edit()
-        ed.putString("cookie", value)
-        ed.apply()
-    }
+            val ed = prefs.edit()
+            ed.putString("cookie", value)
+            ed.apply()
+        }
     var savedIsAuthorized: Boolean = false
-    set(value) {
-        field = value
-        val ed = prefs.edit()
-        ed.putBoolean("isAuthorized", value)
-        ed.apply()
-    }
+        set(value) {
+            field = value
+            val ed = prefs.edit()
+            ed.putBoolean("isAuthorized", value)
+            ed.apply()
+        }
     var savedIsRemembered: Boolean = false
         set(value) {
             field = value
@@ -76,45 +84,45 @@ class Preferences : Application {
         }
 
     var savedSearchByYear: String? = null
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        val ed = prefs.edit()
-        ed.putString("searchByYear", value)
-        ed.apply()
-    }
+            val ed = prefs.edit()
+            ed.putString("searchByYear", value)
+            ed.apply()
+        }
     var savedSearchByNumber: String? = null
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        val ed = prefs.edit()
-        ed.putString("searchByNumber", value)
-        ed.apply()
-    }
+            val ed = prefs.edit()
+            ed.putString("searchByNumber", value)
+            ed.apply()
+        }
     var savedSearchByBookName: String? = null
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        val ed = prefs.edit()
-        ed.putString("searchByBookName", value)
-        ed.apply()
-    }
+            val ed = prefs.edit()
+            ed.putString("searchByBookName", value)
+            ed.apply()
+        }
     var savedSearchByKeywords: String? = null
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        val ed = prefs.edit()
-        ed.putString("searchByKeywords", value)
-        ed.apply()
-    }
+            val ed = prefs.edit()
+            ed.putString("searchByKeywords", value)
+            ed.apply()
+        }
     var savedSearchByAuthor: String? = null
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        val ed = prefs.edit()
-        ed.putString("searchByAuthor", value)
-        ed.apply()
-    }
+            val ed = prefs.edit()
+            ed.putString("searchByAuthor", value)
+            ed.apply()
+        }
 
     override fun onCreate() {
         super.onCreate()
@@ -188,9 +196,9 @@ class Preferences : Application {
         reader = BufferedReader(InputStreamReader(inputStream))
 
         var line: String?
-        while ( true ) {
+        while (true) {
             line = reader.readLine()
-            if(line == null)
+            if (line == null)
                 break
             buffer.append(line)
         }
@@ -216,9 +224,9 @@ class Preferences : Application {
         reader = BufferedReader(InputStreamReader(inputStream))
 
         var line: String?
-        while ( true ) {
+        while (true) {
             line = reader.readLine()
-            if(line == null)
+            if (line == null)
                 break
             buffer.append(line)
         }

@@ -1,21 +1,12 @@
 package natus.diit.com.libhelper
 
-import android.content.res.Resources
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
-
-import org.json.JSONArray
+import android.widget.*
 import org.json.JSONException
 import org.json.JSONObject
-
 import java.net.URL
 import java.net.URLEncoder
 
@@ -125,11 +116,8 @@ class TranslationsListActivity : AppCompatActivity() {
                 }
 
             } catch (e: JSONException) {
-                Toast.makeText(this@TranslationsListActivity,
-                        "Перевірте інтернет з'єднання",
-                        Toast.LENGTH_LONG)
-                        .show()
-                finish()
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.dictionary_container))
             }
 
         }

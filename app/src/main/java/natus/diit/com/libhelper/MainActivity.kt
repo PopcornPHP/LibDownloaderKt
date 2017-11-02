@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         preferences = Preferences(this)
 
         requestWriteDataPersmission()
-        checkLogin();
+        checkLogin()
 
         setContentView(R.layout.activity_main)
 

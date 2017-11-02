@@ -1,7 +1,6 @@
 package natus.diit.com.libhelper
 
 import android.app.ProgressDialog
-import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -83,7 +82,8 @@ class BooksListActivity : AppCompatActivity() {
                 }
             }
 
-            builder.setNegativeButton("Замовити книгу") { dialog, which -> OrderCreator().execute(lb.bookId, lb.branch) }
+            builder.setNegativeButton("Замовити книгу") { dialog, which ->
+                OrderCreator().execute(lb.bookId, lb.branch) }
 
             preferences!!.showBookInfo(lb, builder)
         }
@@ -110,7 +110,9 @@ class BooksListActivity : AppCompatActivity() {
                 Log.i(LOG, "JSON " + resultJson)
 
             } catch (e: Exception) {
-                Log.i(LOG, "error " + e.message)
+                Log.i(LOG, "BookList json error " + e.message)
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.book_list_container))
             }
 
             return resultJson
@@ -189,13 +191,10 @@ class BooksListActivity : AppCompatActivity() {
 
 
             } catch (e: Exception) {
-                Log.i(LOG, "Error + " + e.message)
-                preferences!!.savedIsAuthorized = false
-                Toast.makeText(this@BooksListActivity, "Перевірте інтернет з'єднання", Toast.LENGTH_LONG)
-                        .show()
-                val intent = Intent(this@BooksListActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                Log.i(LOG, "BookList Error + " + e.message)
+//                preferences!!.savedIsAuthorized = false
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.book_list_container))
             }
 
         }

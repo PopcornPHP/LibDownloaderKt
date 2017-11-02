@@ -1,6 +1,5 @@
 package natus.diit.com.libhelper
 
-import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -87,7 +86,6 @@ class OrderListActivity : AppCompatActivity() {
                         val relBranchObj = tempObj.getJSONObject("rel_branch")
                         deliveryPoint = relBranchObj.getString("name")
                     } catch (jE: JSONException) {
-
                         deliveryPoint = ""
                     }
 
@@ -111,7 +109,7 @@ class OrderListActivity : AppCompatActivity() {
                         }
                     }
 
-                    var readableStatus = ""
+                    var readableStatus: String
                     when (orderStatus) {
                         "new" -> readableStatus = "нове замовлення"
                         "process" -> readableStatus = "на обробці"
@@ -148,18 +146,18 @@ class OrderListActivity : AppCompatActivity() {
                 val adapter = ArrayAdapter(this@OrderListActivity,
                         android.R.layout.simple_list_item_1,
                         bookNames!!)
-                booksList!!.adapter = adapter
+                booksList?.adapter = adapter
                 //Maybe server is off or list is empty
                 checkServerStatus(booksArray.length())
 
             } catch (e: Exception) {
                 Log.i(LOG, "JSON Error " + e.message)
-                preferences!!.savedIsAuthorized = false
-                Toast.makeText(this@OrderListActivity, "Перевірте інтернет з'єднання", Toast.LENGTH_LONG)
-                        .show()
-                val intent = Intent(this@OrderListActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+//                preferences!!.savedIsAuthorized = false
+//                Toast.makeText(this@OrderListActivity, "fdfdf", Toast.LENGTH_LONG)
+//                        .show()
+//                val intent = Intent(this@OrderListActivity, MainActivity::class.java)
+//                startActivity(intent)
+                //finish()
             }
 
         }
