@@ -251,7 +251,8 @@ class BooksListActivity : AppCompatActivity() {
         }
     }
 
-    private inner class FileDownloader internal constructor(internal var file: File) : AsyncTask<String, Int, File>() {
+    private inner class FileDownloader internal constructor(internal var file: File)
+        : AsyncTask<String, Int, File>() {
         private var m_error: Exception? = null
         internal val progressDialog = ProgressDialog(this@BooksListActivity)
 
@@ -320,7 +321,11 @@ class BooksListActivity : AppCompatActivity() {
         //обновляем progressDialog
         override fun onProgressUpdate(vararg values: Int?) {
             if (isCancelled) progressDialog.hide()
-            progressDialog.progress = (values[0]!! / values[1] as Float * 100).toInt()
+            val val1:Float = values[0]?.toFloat() ?: 0F
+            val val2:Float = values[1]?.toFloat() ?: 0F
+            Log.i(LOG, "val1 = $val1, val2 = $val2")
+            progressDialog.progress = ((val1 / val2) * 100).toInt()
+            Log.i(LOG, "rez = ${((val1 / val2) * 100).toInt()}")
         }
 
 
