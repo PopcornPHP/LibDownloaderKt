@@ -1,6 +1,9 @@
 package natus.diit.com.libhelper
 
-class LibBook internal constructor(lB: LibBookBuilder) {
+import android.support.v7.app.AlertDialog
+import android.text.Html
+
+class LibBook private constructor(lB: LibBookBuilder) {
 
     val bookId: Int
     val bookName: String?
@@ -126,6 +129,30 @@ class LibBook internal constructor(lB: LibBookBuilder) {
                 }
             }
             return bn
+        }
+
+        fun showOrderInfo(lb: LibBook?, builder: AlertDialog.Builder) {
+            val status = lb?.orderStatus
+            val bookName = lb?.bookName
+            val delPoint = lb?.delPoint
+
+            if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
+                builder.setTitle("Інформація про замовлення")
+                        .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + bookName
+                                + "<br>" + ("<b>" + "Автори: " + "</b>") + lb!!.author
+                                + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
+                                + "<br>" + ("<b>" + "Статус замовлення: " + "</b>") + status
+                                + "<br>" + ("<b>" + "Місце видачі: " + "</b>") + delPoint))
+                        .show()
+            } else {
+                builder.setTitle("Інформація про замовлення")
+                        .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + bookName
+                                + "<br>" + ("<b>" + "Автори: " + "</b>") + lb!!.author
+                                + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
+                                + "<br>" + ("<b>" + "Статус замовлення: " + "</b>") + status
+                                + "<br>" + ("<b>" + "Місце видачі: " + "</b>") + delPoint, Html.FROM_HTML_MODE_LEGACY))
+                        .show()
+            }
         }
     }
 }

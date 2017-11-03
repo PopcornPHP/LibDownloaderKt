@@ -141,12 +141,12 @@ class BooksListActivity : AppCompatActivity() {
 
                     val relAuthorArray = tempObj.getJSONArray("rel_author")
                     var author = ""
-                    for (k in 0 until relAuthorArray.length()) {
-                        val authorObject = relAuthorArray.getJSONObject(k)
-                        if (k == relAuthorArray.length() - 1) {
-                            author += authorObject.getString("full_name")
+                    for (authorsN in 0 until relAuthorArray.length()) {
+                        val authorObject = relAuthorArray.getJSONObject(authorsN)
+                        if (authorsN == relAuthorArray.length() - 1) {
+                            author += authorObject.getString("name")
                         } else {
-                            author += authorObject.getString("full_name") + ", "
+                            author += authorObject.getString("name") + ", "
                         }
                     }
 
@@ -158,6 +158,7 @@ class BooksListActivity : AppCompatActivity() {
                     }
 
                     val shortBookName = LibBook.getShortBookName(bookName)
+
 
                     //Create book from JSON
                     libBooks!![i] = LibBook.LibBookBuilder()

@@ -17,6 +17,7 @@ import javax.net.ssl.*
 
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
+const val LOG = "MyLog"
 fun showSnackBar(text: String, view: View) {
     val mySnackbar = Snackbar.make(view,
             "Перевірте інтернет з'єднання", Snackbar.LENGTH_LONG)
@@ -253,30 +254,6 @@ class Preferences : Application {
                             + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.author
                             + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
                             + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб", Html.FROM_HTML_MODE_LEGACY))
-                    .show()
-        }
-    }
-
-    fun showOrderInfo(lb: LibBook?, builder: AlertDialog.Builder) {
-        val status = lb?.orderStatus
-        val bookName = lb?.bookName
-        val delPoint = lb?.delPoint
-
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
-            builder.setTitle("Інформація про замовлення")
-                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + bookName
-                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb!!.author
-                            + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
-                            + "<br>" + ("<b>" + "Статус замовлення: " + "</b>") + status
-                            + "<br>" + ("<b>" + "Місце видачі: " + "</b>") + delPoint))
-                    .show()
-        } else {
-            builder.setTitle("Інформація про замовлення")
-                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + bookName
-                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb!!.author
-                            + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
-                            + "<br>" + ("<b>" + "Статус замовлення: " + "</b>") + status
-                            + "<br>" + ("<b>" + "Місце видачі: " + "</b>") + delPoint, Html.FROM_HTML_MODE_LEGACY))
                     .show()
         }
     }
