@@ -2,9 +2,11 @@ package natus.diit.com.libhelper
 
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -26,6 +28,12 @@ class OrderListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
+
+        val appCompatActivity = this as AppCompatActivity
+
+        if (NavUtils.getParentActivityName(this) != null) {
+            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        }
 
         preferences = Preferences(this.applicationContext)
 
@@ -54,6 +62,18 @@ class OrderListActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this@OrderListActivity)
             builder.setPositiveButton("ОК") { dialog, which -> finish() }
             builder.setTitle("Список замовлень порожній.").show()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                if (NavUtils.getParentActivityName(this) != null) {
+                    NavUtils.navigateUpFromSameTask(this)
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 

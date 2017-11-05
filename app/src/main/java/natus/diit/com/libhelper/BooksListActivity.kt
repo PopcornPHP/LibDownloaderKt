@@ -5,9 +5,11 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -43,6 +45,12 @@ class BooksListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_list)
+
+        val appCompatActivity = this as AppCompatActivity
+
+        if (NavUtils.getParentActivityName(this) != null) {
+            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        }
 
         preferences = Preferences(this)
 
@@ -83,7 +91,8 @@ class BooksListActivity : AppCompatActivity() {
             }
 
             builder.setNegativeButton("Замовити книгу") { dialog, which ->
-                OrderCreator().execute(lb.bookId, lb.branch) }
+                OrderCreator().execute(lb.bookId, lb.branch)
+            }
 
             preferences!!.showBookInfo(lb, builder)
         }
@@ -299,7 +308,7 @@ class BooksListActivity : AppCompatActivity() {
                 // с каждой итерацией публикуем прогресс
                 while (true) {
                     bufferLength = inputStream.read(buffer)
-                    if(bufferLength <= 0)
+                    if (bufferLength <= 0)
                         break
                     fos.write(buffer, 0, bufferLength)
                     downloadedSize += bufferLength
@@ -321,8 +330,8 @@ class BooksListActivity : AppCompatActivity() {
         //обновляем progressDialog
         override fun onProgressUpdate(vararg values: Int?) {
             if (isCancelled) progressDialog.hide()
-            val val1:Float = values[0]?.toFloat() ?: 0F
-            val val2:Float = values[1]?.toFloat() ?: 0F
+            val val1: Float = values[0]?.toFloat() ?: 0F
+            val val2: Float = values[1]?.toFloat() ?: 0F
             Log.i(LOG, "val1 = $val1, val2 = $val2")
             progressDialog.progress = ((val1 / val2) * 100).toInt()
             Log.i(LOG, "rez = ${((val1 / val2) * 100).toInt()}")
@@ -341,6 +350,18 @@ class BooksListActivity : AppCompatActivity() {
             Toast.makeText(this@BooksListActivity, "Книгу було завантажено", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                if (NavUtils.getParentActivityName(this) != null) {
+                    NavUtils.navigateUpFromSameTask(this)
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun downloadFile(url: String?, file: File) {

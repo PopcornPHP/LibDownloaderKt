@@ -2,7 +2,9 @@ package natus.diit.com.libhelper
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
@@ -26,6 +28,12 @@ class DictionaryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dictionary)
+
+        val appCompatActivity = this as AppCompatActivity
+
+        if (NavUtils.getParentActivityName(this) != null) {
+            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        }
 
         preferences = Preferences(this)
 
@@ -65,5 +73,17 @@ class DictionaryActivity : AppCompatActivity() {
             false
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                if (NavUtils.getParentActivityName(this) != null) {
+                    NavUtils.navigateUpFromSameTask(this)
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }

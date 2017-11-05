@@ -2,8 +2,10 @@ package natus.diit.com.libhelper
 
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.MenuItem
 import android.widget.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -29,6 +31,11 @@ class TranslationsListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dict_list)
 
+        val appCompatActivity = this as AppCompatActivity
+        if (NavUtils.getParentActivityName(this) != null) {
+            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        }
+
         preferences = Preferences(this.applicationContext)
 
         receivedCookie = preferences!!.savedReceivedCookie
@@ -40,6 +47,19 @@ class TranslationsListActivity : AppCompatActivity() {
         domain = preferences!!.domain
 
         DictionarySearchTask().execute()
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                if (NavUtils.getParentActivityName(this) != null) {
+                    NavUtils.navigateUpFromSameTask(this)
+                }
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
 
