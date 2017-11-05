@@ -10,10 +10,9 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Toast
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -98,6 +97,28 @@ class BooksListActivity : AppCompatActivity() {
         }
 
         DownloaderTask().execute()
+    }
+
+    private inner class BookListAdapter(books: Array<LibBook?>?)
+        : ArrayAdapter<LibBook>(this@BooksListActivity, android.R.layout.simple_list_item_1, books) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            var retView = convertView
+            if (retView == null) {
+                retView = this@BooksListActivity
+                        .layoutInflater.inflate(R.layout.booklist_item, null)
+            }
+
+            val lB = getItem(position) as LibBook
+            val titleBookTv = retView?.findViewById(R.id.booklist_item_tv_bookTitle) as TextView
+            titleBookTv.text = bookNames!![position]
+
+            val authorsBookTv = retView.findViewById(R.id.booklist_item_tv_bookAuthors) as TextView
+            authorsBookTv.text = if(lB.author!!.isBlank()) "Без авторів" else lB.author
+
+            return retView
+        }
+
     }
 
     private inner class DownloaderTask : AsyncTask<Void, Void, String>() {
@@ -191,9 +212,8 @@ class BooksListActivity : AppCompatActivity() {
                 }
 
                 registerForContextMenu(booksList)
-                val adapter = ArrayAdapter(this@BooksListActivity,
-                        android.R.layout.simple_list_item_1,
-                        bookNames!!)
+
+                val adapter = BookListAdapter(libBooks)
                 booksList!!.adapter = adapter
 
                 //Maybe server is off or list is empty

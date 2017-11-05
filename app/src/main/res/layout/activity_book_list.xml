@@ -10,10 +10,9 @@
 
     <ListView
         android:id="@+id/list_books"
-        style="@style/Widget.AppCompat.Light.ListView.DropDown"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
-        android:divider="#FAFAD2"
-        android:dividerHeight="2.0sp"
         android:layout_height="match_parent" />
 
 </LinearLayout>
