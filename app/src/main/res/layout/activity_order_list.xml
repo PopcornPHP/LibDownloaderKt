@@ -8,12 +8,13 @@
     android:background="#FFFFFF"
     tools:context=".BooksListActivity">
 
+    <include
+        android:id="@+id/my_toolbar"
+        layout="@layout/toolbar" />
+
     <ListView
         android:id="@+id/order_books"
-        style="@style/Widget.AppCompat.Light.ListView.DropDown"
         android:layout_width="match_parent"
-        android:divider="#FAFAD2"
-        android:dividerHeight="2.0sp"
         android:layout_height="match_parent" />
 
 </LinearLayout>

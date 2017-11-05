@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -45,12 +46,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //suspendApp()
+
         preferences = Preferences(this)
 
         requestWriteDataPersmission()
         checkLogin()
 
         setContentView(R.layout.activity_main)
+
+        setToolbar()
 
         domain = preferences!!.domain
 
@@ -79,7 +83,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, BooksListActivity::class.java)
             startActivity(intent)
         }
-
         btnSearch.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -125,11 +128,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.add(0, 0, 0, "словник")
-        menu.add(0, 1, 0, "замовлення")
-        menu.add(0, 2, 0, "вийти")
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.i(LOG, "here")
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -137,17 +139,17 @@ class MainActivity : AppCompatActivity() {
 
         when (id) {
         //Dictionary
-            0 -> {
+            R.id.main_menu_dictionary -> {
                 val intent = Intent(this, DictionaryActivity::class.java)
                 startActivity(intent)
             }
         //Orders
-            1 -> {
+            R.id.main_menu_orders -> {
                 val `in` = Intent(this@MainActivity, OrderListActivity::class.java)
                 startActivity(`in`)
             }
         //Exit
-            2 -> LogOutTask().execute()
+            R.id.main_menu_exit -> LogOutTask().execute()
         }
 
         return super.onOptionsItemSelected(item)
@@ -206,5 +208,12 @@ class MainActivity : AppCompatActivity() {
     companion object {
 
         private val PERMISSION_REQUEST_CODE = 10
+    }
+
+    private fun setToolbar(){
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+        Log.i(LOG, "$myToolbar")
+        myToolbar?.title = getString(R.string.app_name)
+        setSupportActionBar(myToolbar)
     }
 }

@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MotionEvent
 import android.view.animation.AnimationUtils
@@ -41,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setToolbar()
         setContentView(R.layout.activity_login)
 
         preferences = Preferences(this)
@@ -158,6 +160,12 @@ class LoginActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun setToolbar(){
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+        myToolbar?.title = getString(R.string.title_activity_authorization)
+        setSupportActionBar(myToolbar)
     }
 
 }

@@ -8,6 +8,9 @@
     android:background="#FFFFFF"
     tools:context=".BooksListActivity">
 
+    <include android:id="@+id/my_toolbar"
+        layout="@layout/toolbar" />
+
     <ListView
         android:id="@+id/list_books"
         android:layout_marginRight="5dp"

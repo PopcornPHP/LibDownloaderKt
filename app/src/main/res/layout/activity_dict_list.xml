@@ -7,6 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".TranslationsListActivity">
 
+    <include android:id="@+id/my_toolbar"
+        layout="@layout/toolbar" />
+
     <TextView
         android:id="@+id/tv_translation_results"
         android:layout_width="wrap_content"

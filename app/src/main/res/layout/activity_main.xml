@@ -2,89 +2,103 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eeefee"
     android:layout_gravity="center"
+    android:background="#eeefee"
     android:fillViewport="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/search_container"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:orientation="vertical">
 
-        tools:context=".MainActivity">
+        <include
+            android:id="@+id/my_toolbar"
+            layout="@layout/toolbar" />
 
-        <EditText
-            android:id="@+id/search_name_field"
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/search_container"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/et_sig"
-            android:hint="@string/search_byname_hint"
-            android:paddingLeft="15dp"/>
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
 
-        <EditText
-            android:id="@+id/search_number_field"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:background="@drawable/et_sig"
-            android:hint="@string/sr_number_main_hint"
-            android:paddingLeft="15dp" />
+            tools:context=".MainActivity">
 
-        <EditText
-            android:id="@+id/searchAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:background="@drawable/et_sig"
-            android:hint="@string/searchAuthor"
-            android:paddingLeft="15dp" />
 
-        <EditText
-            android:id="@+id/searchByYear"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:background="@drawable/et_sig"
-            android:hint="@string/searchYear"
-            android:paddingLeft="15dp" />
+            <EditText
+                android:id="@+id/search_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_sig"
+                android:hint="@string/search_byname_hint"
+                android:paddingLeft="15dp" />
 
-        <EditText
-            android:id="@+id/searchByKeywords"
+            <EditText
+                android:id="@+id/search_number_field"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/et_sig"
+                android:hint="@string/sr_number_main_hint"
+                android:paddingLeft="15dp" />
 
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:background="@drawable/et_sig"
-            android:hint="@string/searchByKeywords"
-            android:paddingLeft="15dp" />
+            <EditText
+                android:id="@+id/searchAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/et_sig"
+                android:hint="@string/searchAuthor"
+                android:paddingLeft="15dp" />
 
-        <Button
-            android:id="@+id/search_button_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/et_sig"
-            android:text="@string/main_btn_find" />
+            <EditText
+                android:id="@+id/searchByYear"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/et_sig"
+                android:hint="@string/searchYear"
+                android:paddingLeft="15dp" />
 
+            <EditText
+                android:id="@+id/searchByKeywords"
+
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/et_sig"
+                android:hint="@string/searchByKeywords"
+                android:paddingLeft="15dp" />
+
+            <Button
+                android:id="@+id/search_button_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_sig"
+                android:text="@string/main_btn_find" />
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

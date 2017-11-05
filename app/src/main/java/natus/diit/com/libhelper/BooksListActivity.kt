@@ -8,6 +8,7 @@ import android.os.Environment
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -45,6 +46,7 @@ class BooksListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_list)
 
+        setToolbar()
         val appCompatActivity = this as AppCompatActivity
 
         if (NavUtils.getParentActivityName(this) != null) {
@@ -114,7 +116,9 @@ class BooksListActivity : AppCompatActivity() {
             titleBookTv.text = bookNames!![position]
 
             val authorsBookTv = retView.findViewById(R.id.booklist_item_tv_bookAuthors) as TextView
-            authorsBookTv.text = if(lB.author!!.isBlank()) "Без авторів" else lB.author
+            authorsBookTv.text = if (lB.author!!.isBlank())
+                "Автори : Без авторів"
+            else "Автори: ${lB.author}"
 
             return retView
         }
@@ -387,6 +391,12 @@ class BooksListActivity : AppCompatActivity() {
     private fun downloadFile(url: String?, file: File) {
         val fl = FileDownloader(file)
         fl.execute(url)
+    }
+
+    private fun setToolbar(){
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+        myToolbar?.title = getString(R.string.title_activity_books_list)
+        setSupportActionBar(myToolbar)
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.animation.AnimationUtils
@@ -28,6 +29,7 @@ class DictionaryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dictionary)
+        setToolbar()
 
         val appCompatActivity = this as AppCompatActivity
 
@@ -85,5 +87,11 @@ class DictionaryActivity : AppCompatActivity() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    fun setToolbar(){
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+        myToolbar?.title = getString(R.string.title_activity_dictionary)
+        setSupportActionBar(myToolbar)
     }
 }

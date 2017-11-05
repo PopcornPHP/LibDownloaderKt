@@ -10,13 +10,13 @@
     <string name="prompt_library_card">Читацький номер</string>
     <string name="register_button_text">Зареєструватися</string>
     <string name="checkLogin">Запам\'ятати ?</string>
-    <string name="authorization_name">Авторизація</string>
+
     <string name="prompt_name">Ім\'я</string>
     <string name="prompt_confirm_password">Підтвердження пароля</string>
     <string name="prompt_surname">Прізвище</string>
     <string name="title_activity_register">Реєстрація</string>
     <string name="prompt_email">Email</string>
-    <string name="title_activity_dictionary">Словник</string>
+
     <string name="dictionary_search_field_hint">Слово для перекладу</string>
     <string name="dictionary_result_hint">Результат перекладу</string>
     <string name="dictionary_search_button_text">Перекласти</string>
@@ -37,10 +37,19 @@
     </string-array>
 
     <string name="title_activity_books_list">Знайдені книги</string>
+    <string name="title_activity_order_list">Замовлення</string>
+    <string name="title_activity_dictionary">Словник</string>
+    <string name="title_activity_translations">Переклади</string>
+    <string name="title_activity_authorization">Авторизація</string>
+
     <string name="tv_translations_results">Результат перекладу</string>
     <string name="main_btn_find">Знайти</string>
     <string name="menu_download_book">Завантажити книгу</string>
     <string name="menu_order_book">Замовити книгу</string>
-    <string name="title_activity_order_list">Замовлення</string>
+
+
+    <string name="main_menu_item_dictionary_text">Словник</string>
+    <string name="main_menu_item_orders_text">Замовлення</string>
+    <string name="main_menu_item_exit_text">Вийти</string>
 
 </resources>

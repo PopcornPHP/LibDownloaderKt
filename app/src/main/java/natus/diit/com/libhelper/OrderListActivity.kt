@@ -1,16 +1,17 @@
 package natus.diit.com.libhelper
 
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Toast
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
@@ -28,6 +29,8 @@ class OrderListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
+
+        setToolbar()
 
         val appCompatActivity = this as AppCompatActivity
 
@@ -143,7 +146,8 @@ private inner class OrderListTask : AsyncTask<Void, Void, String>() {
                     "wait" -> readableStatus = "очікує отримання"
                     "success" -> readableStatus = "успішний"
                     "absent" -> readableStatus = "нема в наявності"
-                    "cancel" -> readableStatus = "скасований"
+                    "cancel" -> readableStatus = "скасовано"
+                    "cancelByUser" -> readableStatus = "скасовано користувачем"
                     else -> readableStatus = "невідомий"
                 }
 
@@ -160,20 +164,25 @@ private inner class OrderListTask : AsyncTask<Void, Void, String>() {
                         .year(year)
                         .author(author)
                         .delPoint(deliveryPoint)
+                        .orderStatus(readableStatus)
                         .build()
 
                 if (category == "1" || category == "3") {
-                    bookNames!![i] = linkName + "\nСтатус: " + readableStatus
+                    bookNames!![i] = linkName
                 } else {
-                    bookNames!![i] = bookName + "\nСтатус: " + readableStatus
+                    bookNames!![i] = bookName
                 }
             }
 
             registerForContextMenu(booksList)
-            val adapter = ArrayAdapter(this@OrderListActivity,
-                    android.R.layout.simple_list_item_1,
-                    bookNames!!)
-            booksList?.adapter = adapter
+//            val adapter = ArrayAdapter(this@OrderListActivity,
+//                    android.R.layout.simple_list_item_1,
+//                    bookNames!!)
+//            booksList?.adapter = adapter
+
+            val adapter = OrderListAdapter(libBooks)
+            booksList!!.adapter = adapter
+
             //Maybe server is off or list is empty
             checkServerStatus(booksArray.length())
 
@@ -195,6 +204,48 @@ private inner class OrderListTask : AsyncTask<Void, Void, String>() {
         return bn
     }
 }
+
+    private inner class OrderListAdapter(books: Array<LibBook?>?)
+        : ArrayAdapter<LibBook>(this@OrderListActivity, android.R.layout.simple_list_item_1, books) {
+
+        lateinit var titleBookTv: TextView
+        lateinit var orderStatusTv: TextView
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            var retView = convertView
+            if (retView == null) {
+                retView = this@OrderListActivity
+                        .layoutInflater.inflate(R.layout.orderlist_item, null)
+            }
+
+            val lB = getItem(position) as LibBook
+            titleBookTv = retView?.findViewById(R.id.orderList_item_tv_bookTitle) as TextView
+            titleBookTv.text = bookNames!![position]
+
+            orderStatusTv = retView.findViewById(R.id.orderList_item_tv_orderStatus) as TextView
+            orderStatusTv.text = "Статус замовлення : ${lB.orderStatus}"
+
+            setOrderStatusColor(lB.orderStatus)
+
+            return retView
+        }
+
+        private fun setOrderStatusColor(_orderStatus: String?) {
+            when(_orderStatus){
+                "очікує отримання" ->
+                    orderStatusTv.setTextColor(Color.BLUE)
+                "скасовано користувачем","скасовано" ->
+                    orderStatusTv.setTextColor(Color.RED)
+                "успішний" ->
+                    orderStatusTv.setTextColor(Color.GREEN)
+                "нема в наявності" ->
+                    orderStatusTv.setTextColor(Color.YELLOW)
+                "на обробці","нове замовлення" ->
+                    orderStatusTv.setTextColor(Color.CYAN)
+            }
+        }
+
+    }
 
 private inner class CancelOrderTask : AsyncTask<Int, Void, String>() {
     internal var resultJson = ""
@@ -230,4 +281,10 @@ private inner class CancelOrderTask : AsyncTask<Int, Void, String>() {
 
     }
 }
+
+    private fun setToolbar(){
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+        myToolbar?.title = getString(R.string.title_activity_order_list)
+        setSupportActionBar(myToolbar)
+    }
 }
