@@ -54,6 +54,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/et_sig"
         android:layout_marginBottom="10dp"
+        android:textColor="@color/ColorLightBlack"
         android:text="@string/dictionary_search_button_text" />
 
 </LinearLayout>
