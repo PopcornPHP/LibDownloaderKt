@@ -62,7 +62,7 @@ class BooksListActivity : AppCompatActivity() {
         searchByAuthor = preferences!!.savedSearchByAuthor
         receivedCookie = preferences!!.savedReceivedCookie
 
-        domain = preferences!!.domain
+        domain = preferences?.domain
 
         booksList = findViewById(R.id.list_books) as ListView
         booksList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
@@ -105,6 +105,7 @@ class BooksListActivity : AppCompatActivity() {
         : ArrayAdapter<LibBook>(this@BooksListActivity, android.R.layout.simple_list_item_1, books) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+
             var retView = convertView
             if (retView == null) {
                 retView = this@BooksListActivity
@@ -218,7 +219,9 @@ class BooksListActivity : AppCompatActivity() {
                 registerForContextMenu(booksList)
 
                 val adapter = BookListAdapter(libBooks)
-                booksList!!.adapter = adapter
+                booksList?.adapter = adapter
+
+                hideProgressBar()
 
                 //Maybe server is off or list is empty
                 checkServerStatus(booksArray.length())
@@ -231,6 +234,11 @@ class BooksListActivity : AppCompatActivity() {
                         findViewById(R.id.book_list_container))
             }
 
+        }
+
+        private fun hideProgressBar() {
+            val progressBar = findViewById(R.id.book_list_progress) as ProgressBar?
+            progressBar?.visibility = View.INVISIBLE
         }
 
     }
