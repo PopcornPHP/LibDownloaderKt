@@ -85,7 +85,8 @@ class OrderListActivity : AppCompatActivity() {
                 Log.i(LOG, "JSON " + resultJson)
 
             } catch (e: Exception) {
-                finish()
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.order_list_container))
             }
 
             return resultJson
@@ -169,10 +170,6 @@ class OrderListActivity : AppCompatActivity() {
                 }
 
                 registerForContextMenu(booksList)
-//            val adapter = ArrayAdapter(this@OrderListActivity,
-//                    android.R.layout.simple_list_item_1,
-//                    bookNames!!)
-//            booksList?.adapter = adapter
 
                 val adapter = OrderListAdapter(libBooks)
                 booksList!!.adapter = adapter
@@ -253,7 +250,8 @@ class OrderListActivity : AppCompatActivity() {
                 Log.i(LOG, "JSON " + resultJson)
 
             } catch (e: Exception) {
-                finish()
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.order_list_container))
             }
 
             return resultJson
@@ -269,7 +267,8 @@ class OrderListActivity : AppCompatActivity() {
                 Toast.makeText(this@OrderListActivity, "Замовлення було скасовано", Toast.LENGTH_LONG)
                         .show()
             } catch (e: JSONException) {
-                Toast.makeText(this@OrderListActivity, "Замовлення скасувати неможливо", Toast.LENGTH_LONG)
+                Toast.makeText(this@OrderListActivity, "Замовлення скасувати неможливо",
+                        Toast.LENGTH_LONG)
                         .show()
             }
 

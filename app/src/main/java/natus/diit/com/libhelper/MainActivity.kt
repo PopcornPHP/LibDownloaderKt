@@ -144,8 +144,8 @@ class MainActivity : AppCompatActivity() {
             }
         //Orders
             R.id.main_menu_orders -> {
-                val `in` = Intent(this@MainActivity, OrderListActivity::class.java)
-                startActivity(`in`)
+                val intent = Intent(this, OrderListActivity::class.java)
+                startActivity(intent)
             }
         //Exit
             R.id.main_menu_exit -> LogOutTask().execute()
