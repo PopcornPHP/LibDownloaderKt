@@ -116,7 +116,8 @@ class LoginActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 Log.i(LOG, "Request Error " + e.toString())
-                showSnackBar("Перевірте інтернет з'єднання", findViewById(R.id.passw_login_form))
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.passw_login_form))
                 e.printStackTrace()
             }
 

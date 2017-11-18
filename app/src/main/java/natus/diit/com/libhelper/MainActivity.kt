@@ -188,9 +188,8 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, LoginActivity::class.java)
                     startActivity(intent)
 
-//                    Toast.makeText(this@MainActivity, "Ви вийшли з акаунту",
-//                            Toast.LENGTH_SHORT).show()
-                    showSnackBar("Ви вийшли з акаунту", findViewById(R.id.passw_login_form))
+                    Toast.makeText(this@MainActivity, "Ви вийшли з акаунту",
+                            Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     showSnackBar("Перевірте інтернет з'єднання",
