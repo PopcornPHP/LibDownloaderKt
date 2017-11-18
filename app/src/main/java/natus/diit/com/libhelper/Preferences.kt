@@ -8,6 +8,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -41,7 +42,7 @@ fun setToolbar(activity: AppCompatActivity,
     myToolbar?.title = activity.getString(toolbarTitleRes)
     activity.setSupportActionBar(myToolbar)
 
-    val upArrow: Drawable = activity.resources.getDrawable(R.drawable.abc_ic_ab_back_material)
+    val upArrow: Drawable = ContextCompat.getDrawable(activity, R.drawable.abc_ic_ab_back_material)
     upArrow.setColorFilter(activity.resources.getColor(arrowColorRes), PorterDuff.Mode.SRC_ATOP)
     activity.supportActionBar?.setHomeAsUpIndicator(upArrow)
 
