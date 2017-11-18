@@ -25,9 +25,10 @@ import javax.net.ssl.*
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
 const val LOG = "MyLog"
-fun showSnackBar(text: String, view: View) {
-    val mySnackbar = Snackbar.make(view,
-            "Перевірте інтернет з'єднання", Snackbar.LENGTH_LONG)
+
+fun showSnackBar(text: String = "Перевірте інтернет з'єднання", view: View) {
+    Snackbar.make(view,
+            text, Snackbar.LENGTH_LONG)
             .show()
 }
 
