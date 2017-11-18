@@ -151,13 +151,6 @@ class Preferences : Application {
             ed.apply()
         }
 
-    override fun onCreate() {
-        super.onCreate()
-
-        //Insecure method, must be deleted as soon as possible.
-        //trustAllCertificates();
-    }
-
     //default constructor
     constructor() {}
 
@@ -179,32 +172,6 @@ class Preferences : Application {
 
         savedLogin = prefs.getString("login", "")
         savedPassword = prefs.getString("password", "")
-    }
-
-    private fun trustAllCertificates() {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate>? {
-                return null
-            }
-
-            override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
-
-            override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
-
-        })
-
-        try {
-            val sc = SSLContext.getInstance("SSL")
-            sc.init(null, trustAllCerts, java.security.SecureRandom())
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
-        } catch (e: Exception) {
-
-        }
-
-        // Create all-trusting host name verifier
-        val allHostsValid = HostnameVerifier { hostname, session -> true }
-        // Install the all-trusting host verifier
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
     }
 
     fun getJSONFromServer(url: URL, cookie: String?): String {
