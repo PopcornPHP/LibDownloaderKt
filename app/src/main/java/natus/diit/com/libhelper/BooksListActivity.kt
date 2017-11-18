@@ -1,6 +1,8 @@
 package natus.diit.com.libhelper
 
 import android.app.ProgressDialog
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -27,7 +29,6 @@ import java.net.URLEncoder
 
 class BooksListActivity : AppCompatActivity() {
 
-    internal var LOG = "MyLog"
     private var booksList: ListView? = null
     private var bookNames: Array<String?>? = null
     private var libBooks: Array<LibBook?>? = null
@@ -46,12 +47,7 @@ class BooksListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_list)
 
-        setToolbar()
-        val appCompatActivity = this as AppCompatActivity
-
-        if (NavUtils.getParentActivityName(this) != null) {
-            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        setToolbar(this, R.string.title_activity_books_list)
 
         preferences = Preferences(this)
 
@@ -399,12 +395,6 @@ class BooksListActivity : AppCompatActivity() {
     private fun downloadFile(url: String?, file: File) {
         val fl = FileDownloader(file)
         fl.execute(url)
-    }
-
-    private fun setToolbar(){
-        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
-        myToolbar?.title = getString(R.string.title_activity_books_list)
-        setSupportActionBar(myToolbar)
     }
 
 }

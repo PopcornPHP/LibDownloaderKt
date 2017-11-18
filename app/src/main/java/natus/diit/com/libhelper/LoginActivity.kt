@@ -38,7 +38,6 @@ class LoginActivity : AppCompatActivity() {
     private var preferences: Preferences? = null
     private var domain: String? = null
 
-    internal var LOG = "MyLog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -29,13 +29,8 @@ class DictionaryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dictionary)
-        setToolbar()
+        setToolbar(this, R.string.title_activity_dictionary)
 
-        val appCompatActivity = this as AppCompatActivity
-
-        if (NavUtils.getParentActivityName(this) != null) {
-            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
 
         preferences = Preferences(this)
 
@@ -89,9 +84,4 @@ class DictionaryActivity : AppCompatActivity() {
         }
     }
 
-    fun setToolbar(){
-        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
-        myToolbar?.title = getString(R.string.title_activity_dictionary)
-        setSupportActionBar(myToolbar)
-    }
 }

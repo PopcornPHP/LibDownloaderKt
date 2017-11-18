@@ -20,7 +20,6 @@ import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
-    internal var LOG = "MyLog"
 
     private var etSearchByNumber: EditText? = null
     private var etSearchByAuthor: EditText? = null

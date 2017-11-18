@@ -16,7 +16,6 @@ import java.net.URLEncoder
 
 class TranslationsListActivity : AppCompatActivity() {
 
-    internal var LOG = "MyLog"
     private var receivedCookie: String? = null
 
     private var lwDictionaryList: ListView? = null
@@ -31,12 +30,7 @@ class TranslationsListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dict_list)
-        setToolbar()
-
-        val appCompatActivity = this as AppCompatActivity
-        if (NavUtils.getParentActivityName(this) != null) {
-            appCompatActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
+        setToolbar(this, R.string.title_activity_translations)
 
         preferences = Preferences(this.applicationContext)
 
@@ -146,9 +140,4 @@ class TranslationsListActivity : AppCompatActivity() {
 
     }
 
-    fun setToolbar(){
-        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
-        myToolbar?.title = getString(R.string.title_activity_translations)
-        setSupportActionBar(myToolbar)
-    }
 }

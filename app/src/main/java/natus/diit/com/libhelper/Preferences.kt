@@ -3,10 +3,17 @@ package natus.diit.com.libhelper
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.support.design.widget.Snackbar
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.text.Html
 import android.view.View
+import org.jetbrains.anko.custom.ankoView
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -22,6 +29,24 @@ fun showSnackBar(text: String, view: View) {
     val mySnackbar = Snackbar.make(view,
             "Перевірте інтернет з'єднання", Snackbar.LENGTH_LONG)
             .show()
+}
+
+fun setToolbar(activity: AppCompatActivity,
+               toolbarTitleRes:Int,
+               arrowColorRes: Int = R.color.colorWhite
+               ){
+
+    val myToolbar = activity.findViewById(R.id.my_toolbar) as Toolbar?
+    myToolbar?.title = activity.getString(toolbarTitleRes)
+    activity.setSupportActionBar(myToolbar)
+
+    val upArrow: Drawable = activity.resources.getDrawable(R.drawable.abc_ic_ab_back_material)
+    upArrow.setColorFilter(activity.resources.getColor(arrowColorRes), PorterDuff.Mode.SRC_ATOP)
+    activity.supportActionBar?.setHomeAsUpIndicator(upArrow)
+
+    if (NavUtils.getParentActivityName(activity) != null) {
+        activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
 }
 
 class Preferences : Application {
