@@ -1,10 +1,12 @@
 package natus.diit.com.libhelper
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -42,13 +44,16 @@ class MainActivity : AppCompatActivity() {
     private var domain: String? = null
 
 
+
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //suspendApp()
 
         preferences = Preferences(this)
 
-        requestWriteDataPersmission()
+        requestWriteDataPermission()
         checkLogin()
 
         setContentView(R.layout.activity_main)
@@ -62,8 +67,6 @@ class MainActivity : AppCompatActivity() {
         etSearchByKeywords = findViewById(R.id.searchByKeywords) as EditText
         etSearchByYear = findViewById(R.id.searchByYear) as EditText
         etSearchByBookName = findViewById(R.id.search_name_field) as EditText
-
-        //Log.i(LOG, "receivedCookie = " + receivedCookie!!)
 
         val btnSearch = findViewById(R.id.search_button_main) as Button
         btnSearch.setOnClickListener {
@@ -92,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
+
     }
 
     fun suspendApp() {
@@ -109,9 +113,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun requestWriteDataPersmission() {
+    private fun requestWriteDataPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_CODE)
         }
     }
 
@@ -120,7 +125,9 @@ class MainActivity : AppCompatActivity() {
         receivedCookie = preferences!!.savedReceivedCookie
         isAuthorized = preferences!!.savedIsAuthorized
         isRemembered = preferences!!.savedIsRemembered
+        Log.i(LOG, "$isAuthorized, $isRemembered")
         if (!isAuthorized) {
+            Log.i(LOG, "lol here")
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
@@ -128,7 +135,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        Log.i(LOG, "here")
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
@@ -182,11 +188,13 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, LoginActivity::class.java)
                     startActivity(intent)
 
-                    Toast.makeText(this@MainActivity, "Ви вийшли з акаунту", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "Ви вийшли з акаунту",
+//                            Toast.LENGTH_SHORT).show()
+                    showSnackBar("Ви вийшли з акаунту", findViewById(R.id.passw_login_form))
                     finish()
                 } else {
-                    Toast.makeText(this@MainActivity, "Перевірте інтернет з'єднання", Toast.LENGTH_LONG)
-                            .show()
+                    showSnackBar("Перевірте інтернет з'єднання",
+                            findViewById(R.id.search_container))
                 }
             } catch (e: Exception) {
                 Log.i(LOG, "LogOut error 2" + e.message)
@@ -195,21 +203,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        Log.i(LOG, "isBackPressed = $isBackPressed")
+        if(!isBackPressed){
+            isBackPressed = true
+            showSnackBar("Натисніть ще раз для виходу",
+                    findViewById(R.id.search_container))
 
-    override fun onDestroy() {
-        if (!isRemembered) {
-            isAuthorized = false
-            preferences!!.savedIsAuthorized = false
+            val handler = Handler()
+            handler.postDelayed({ isBackPressed = false }, 2500 )
+
+        }else{
+            if (!isRemembered) {
+                isAuthorized = false
+                preferences!!.savedIsAuthorized = false
+            }
+            super.onBackPressed()
+            finish()
         }
-        super.onDestroy()
+
     }
 
     companion object {
 
         private val PERMISSION_REQUEST_CODE = 10
+        private var isBackPressed = false
     }
 
-    private fun setToolbar(){
+    private fun setToolbar() {
         val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
         Log.i(LOG, "$myToolbar")
         myToolbar?.title = getString(R.string.app_name)
