@@ -72,7 +72,8 @@ class TranslationsListActivity : AppCompatActivity() {
                 Log.i(LOG, "JSON " + resultJson)
 
             } catch (e: Exception) {
-                e.printStackTrace()
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.translations_list_container))
             }
 
             return resultJson
@@ -105,7 +106,8 @@ class TranslationsListActivity : AppCompatActivity() {
                             names)
                     lwDictionaryList!!.adapter = adapter
 
-                    lwDictionaryList!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, pos, id ->
+                    lwDictionaryList!!.onItemClickListener = AdapterView.OnItemClickListener {
+                        adapterView, view, pos, id ->
                         try {
                             val tmpJSON = responseData.getJSONArray(names[pos])
                             val translationResult = StringBuilder()
@@ -118,7 +120,8 @@ class TranslationsListActivity : AppCompatActivity() {
                             tvDictionaryResult!!.text = translationResult.toString()
 
                         } catch (e: JSONException) {
-                            Toast.makeText(this@TranslationsListActivity, "JSON error", Toast.LENGTH_LONG)
+                            Toast.makeText(this@TranslationsListActivity,
+                                    "JSON error", Toast.LENGTH_LONG)
                                     .show()
                         }
                     }
@@ -133,7 +136,7 @@ class TranslationsListActivity : AppCompatActivity() {
 
             } catch (e: JSONException) {
                 showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.dictionary_container))
+                        findViewById(R.id.translations_list_container))
             }
 
         }
