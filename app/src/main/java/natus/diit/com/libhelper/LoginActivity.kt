@@ -1,7 +1,6 @@
 package natus.diit.com.libhelper
 
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -12,10 +11,10 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import org.json.JSONException
-import org.json.JSONObject
-import java.net.URL
-import java.net.URLEncoder
+import natus.diit.com.libhelper.model.user.CheckUserLogIn
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class LoginActivity : AppCompatActivity() {
@@ -45,6 +44,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         preferences = Preferences(this)
+
         domain = preferences!!.domain
 
         signInButton = findViewById(R.id.sign_in_button) as Button
@@ -66,8 +66,6 @@ class LoginActivity : AppCompatActivity() {
             password = etPassword!!.text.toString()
             isRemembered = loginCheckBox!!.isChecked
 
-            Log.i(LOG, "ccc $cardNumber $password")
-
             if (isRemembered) {
                 preferences!!.savedLogin = cardNumber
                 preferences!!.savedPassword = password
@@ -77,7 +75,8 @@ class LoginActivity : AppCompatActivity() {
                 preferences!!.savedPassword = ""
                 preferences!!.savedIsRemembered = false
             }
-            LoginChecker().execute()
+
+            logIn()
         }
 
         signInButton!!.setOnTouchListener { v, event ->
@@ -100,36 +99,17 @@ class LoginActivity : AppCompatActivity() {
         //        });
     }
 
-    private inner class LoginChecker : AsyncTask<Void, Void, String>() {
-        private var resultJson = ""
+    private fun logIn() {
+        val call = apiService?.signIn(cardNumber, password, isRemembered)
+        call?.enqueue(object : Callback<CheckUserLogIn> {
+            override fun onResponse(call: Call<CheckUserLogIn>,
+                                    response: Response<CheckUserLogIn>) {
+                val headers = response.headers()
+                preferences?.savedReceivedCookie = headers["Set-Cookie"]
 
-        override fun doInBackground(vararg params: Void): String {
-            try {
-                val regCardNumber = URLEncoder.encode(cardNumber, "UTF-8")
-                val regPassword = URLEncoder.encode(password, "UTF-8")
-                val url = URL(domain + "/api/user/signin?login=" + regCardNumber +
-                        "&password=" + regPassword +
-                        "&remember=" + isRemembered)
+                val user = response.body().user
 
-                resultJson = preferences!!.getJSONFromServer(url)
-                Log.i(LOG, "resultJson = " + resultJson)
-
-            } catch (e: Exception) {
-                Log.i(LOG, "Request Error " + e.toString())
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.passw_login_form))
-                e.printStackTrace()
-            }
-
-            return resultJson
-        }
-
-        override fun onPostExecute(strJson: String) {
-            super.onPostExecute(strJson)
-            val dataJsonObj: JSONObject
-            try {
-                dataJsonObj = JSONObject(strJson)
-                if (strJson.startsWith("{\"response\"")) {
+                if (user != null) {
                     isAuthorized = true
                 } else {
                     if (password == "")
@@ -154,15 +134,17 @@ class LoginActivity : AppCompatActivity() {
 
                     mySnackbar.show()
                 }
-
-            } catch (e: JSONException) {
-                Log.i(LOG, "Json Error ${e.message}")
             }
 
-        }
+            override fun onFailure(call: Call<CheckUserLogIn>, t: Throwable) {
+                Log.e(LOG, "LoginActivity Error + " + t.message)
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.passw_login_form))
+            }
+        })
     }
 
-    private fun setToolbar(){
+    private fun setToolbar() {
         val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
         myToolbar?.title = getString(R.string.title_activity_authorization)
         setSupportActionBar(myToolbar)
