@@ -13,8 +13,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import natus.diit.com.libhelper.rest.ApiClient
-import natus.diit.com.libhelper.rest.ApiInterface
 import natus.diit.com.libhelper.model.book.Book
 import natus.diit.com.libhelper.model.book.JsonResponse
 import natus.diit.com.libhelper.model.order.OrderResponse
@@ -30,8 +28,6 @@ import java.net.URL
 
 
 class BooksListActivity : AppCompatActivity() {
-
-    val apiService = ApiClient.client?.create(ApiInterface::class.java)
 
     private var booksList: ListView? = null
     private var libBooks: List<Book?>? = null
