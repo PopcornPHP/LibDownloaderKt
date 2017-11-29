@@ -1,7 +1,7 @@
-package info.androidhive.retrofit.rest
+package natus.diit.com.libhelper.rest
 
 import natus.diit.com.libhelper.model.book.JsonResponse
-import natus.diit.com.libhelper.model.order.OrderResponce
+import natus.diit.com.libhelper.model.order.OrderResponse
 import retrofit2.Call
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -25,5 +25,5 @@ interface ApiInterface {
                     @Query("book_id") bookId: Int?,
                     @Query("branch_id") branchId: Int?
 
-    ): Call<OrderResponce>
+    ): Call<OrderResponse>
 }

@@ -1,4 +1,4 @@
-package info.androidhive.retrofit.rest
+package natus.diit.com.libhelper.rest
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
