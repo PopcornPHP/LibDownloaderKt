@@ -3,7 +3,6 @@ package natus.diit.com.libhelper
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,7 +17,10 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import java.net.URL
+import natus.diit.com.libhelper.model.user.LogOutResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,8 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     private var preferences: Preferences? = null
     private var domain: String? = null
-
-
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-
     }
 
     fun suspendApp() {
@@ -105,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         builder.setOnCancelListener { finish() }
 
         builder.setOnDismissListener { finish() }
-
 
         builder.setTitle("Інформація")
                 .setMessage("Додаток тимчасово призупинено.")
@@ -125,13 +123,39 @@ class MainActivity : AppCompatActivity() {
         receivedCookie = preferences!!.savedReceivedCookie
         isAuthorized = preferences!!.savedIsAuthorized
         isRemembered = preferences!!.savedIsRemembered
-        Log.i(LOG, "$isAuthorized, $isRemembered")
+
         if (!isAuthorized) {
-            Log.i(LOG, "lol here")
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
+
+//        val call = apiService?.checkUser(receivedCookie)
+//
+//        call?.enqueue(object : Callback<CheckUserResponse> {
+//            override fun onResponse(call: Call<CheckUserResponse>,
+//                                    response: Response<CheckUserResponse>) {
+//                val resp = response.body().isAuthorized
+//                Log.i(LOG, "responce = $resp")
+//                Log.i(LOG, "response.body = ${response.body()}")
+//
+//                if(resp == false){
+//                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
+//                    startActivity(intent)
+//                    finish()
+//                }else{
+//                    preferences?.savedIsAuthorized = true
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<CheckUserResponse>, t: Throwable) {
+//                Toast.makeText(this@MainActivity, "Перевірте інтернет з'єднання",
+//                        Toast.LENGTH_LONG)
+//                        .show()
+//                Log.i(LOG, "${t.message}")
+//            }
+//        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -154,65 +178,22 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         //Exit
-            R.id.main_menu_exit -> LogOutTask().execute()
+            R.id.main_menu_exit -> logOut()
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private inner class LogOutTask : AsyncTask<Void, Void, String>() {
-        internal var resultJson = ""
-
-        override fun doInBackground(vararg params: Void): String {
-            try {
-                val url = URL(domain!! + "/api/user/signout")
-                resultJson = preferences!!.getJSONFromServer(url, receivedCookie)
-                Log.i(LOG, "JSON " + resultJson)
-
-            } catch (e: Exception) {
-                Log.i(LOG, "LogOut error" + e.message)
-            }
-
-            return resultJson
-        }
-
-        override fun onPostExecute(s: String) {
-            super.onPostExecute(s)
-            try {
-                if (s != "") {
-                    preferences!!.savedIsAuthorized = false
-                    preferences!!.savedLogin = ""
-                    preferences!!.savedPassword = ""
-                    preferences!!.savedIsRemembered = false
-
-                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                    startActivity(intent)
-
-                    Toast.makeText(this@MainActivity, "Ви вийшли з акаунту",
-                            Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    showSnackBar("Перевірте інтернет з'єднання",
-                            findViewById(R.id.search_container))
-                }
-            } catch (e: Exception) {
-                Log.i(LOG, "LogOut error 2" + e.message)
-            }
-
-        }
-    }
-
     override fun onBackPressed() {
-        Log.i(LOG, "isBackPressed = $isBackPressed")
-        if(!isBackPressed){
+        if (!isBackPressed) {
             isBackPressed = true
             showSnackBar("Натисніть ще раз для виходу",
                     findViewById(R.id.search_container))
 
             val handler = Handler()
-            handler.postDelayed({ isBackPressed = false }, 2500 )
+            handler.postDelayed({ isBackPressed = false }, 2500)
 
-        }else{
+        } else {
             if (!isRemembered) {
                 isAuthorized = false
                 preferences!!.savedIsAuthorized = false
@@ -231,8 +212,43 @@ class MainActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
-        Log.i(LOG, "$myToolbar")
         myToolbar?.title = getString(R.string.app_name)
         setSupportActionBar(myToolbar)
+    }
+
+    private fun logOut() {
+        val call = apiService?.logOut(receivedCookie)
+
+        call?.enqueue(object : Callback<LogOutResponse> {
+            override fun onResponse(call: Call<LogOutResponse>, response: Response<LogOutResponse>) {
+                val resp = response.body().response
+                Log.i(LOG, "$resp")
+                Log.i(LOG, "${response.body()}")
+                when (resp) {
+                    true -> {
+                        preferences!!.savedIsAuthorized = false
+                        preferences!!.savedLogin = ""
+                        preferences!!.savedPassword = ""
+                        preferences!!.savedIsRemembered = false
+
+                        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                        startActivity(intent)
+
+                        Toast.makeText(this@MainActivity, "Ви вийшли з акаунту",
+                                Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    else -> {
+                        Toast.makeText(this@MainActivity, "Не вдалося вийти з акаунту",
+                                Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<LogOutResponse>, t: Throwable) {
+                showSnackBar("Перевірте інтернет з'єднання",
+                        findViewById(R.id.search_container))
+            }
+        })
     }
 }
