@@ -1,8 +1,6 @@
 package natus.diit.com.libhelper
 
 import android.app.ProgressDialog
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -10,28 +8,33 @@ import android.os.Environment
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import org.json.JSONException
-import org.json.JSONObject
+import natus.diit.com.libhelper.rest.ApiClient
+import natus.diit.com.libhelper.rest.ApiInterface
+import natus.diit.com.libhelper.model.book.Book
+import natus.diit.com.libhelper.model.book.JsonResponse
+import natus.diit.com.libhelper.model.order.OrderResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
 
 
 class BooksListActivity : AppCompatActivity() {
 
+    val apiService = ApiClient.client?.create(ApiInterface::class.java)
+
     private var booksList: ListView? = null
-    private var bookNames: Array<String?>? = null
-    private var libBooks: Array<LibBook?>? = null
+    private var libBooks: List<Book?>? = null
 
     private var searchByNumber: String? = null
     private var searchByAuthor: String? = null
@@ -41,7 +44,6 @@ class BooksListActivity : AppCompatActivity() {
 
     private var receivedCookie: String? = null
     private var preferences: Preferences? = null
-    private var domain: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,20 +60,18 @@ class BooksListActivity : AppCompatActivity() {
         searchByAuthor = preferences!!.savedSearchByAuthor
         receivedCookie = preferences!!.savedReceivedCookie
 
-        domain = preferences?.domain
-
         booksList = findViewById(R.id.list_books) as ListView
         booksList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val lb = libBooks!![position]
             val builder: AlertDialog.Builder
             builder = AlertDialog.Builder(this@BooksListActivity)
-            val fileSize = lb!!.fileSize / 1024
+            val fileSize = lb?.fileSize!! / 1024
             if (fileSize > 0) {
                 builder.setPositiveButton("Завантажити книгу") { dialog, which ->
-                    val downloadLink = lb.downloadLink
+                    val downloadLink = lb.link
 
-                    Log.i(LOG, "dL = " + downloadLink!!)
-                    Log.i(LOG, "category = " + lb.category!!)
+                    Log.i(LOG, "dL = " + downloadLink)
+                    Log.i(LOG, "category = " + lb.categoryId)
                     val folder = File(Environment.getExternalStorageDirectory().toString() +
                             File.separator + "DNURTBooks")
                     Log.i(LOG, "File path = " + folder.absolutePath)
@@ -88,129 +88,54 @@ class BooksListActivity : AppCompatActivity() {
             }
 
             builder.setNegativeButton("Замовити книгу") { dialog, which ->
-                OrderCreator().execute(lb.bookId, lb.branch)
+                createOrder(lb.id, lb.currentBranch)
             }
 
             preferences!!.showBookInfo(lb, builder)
         }
 
-        DownloaderTask().execute()
+
+        fetchBooksList()
     }
 
-    private inner class BookListAdapter(books: Array<LibBook?>?)
-        : ArrayAdapter<LibBook>(this@BooksListActivity, android.R.layout.simple_list_item_1, books) {
+    private fun createOrder(bookId: Int, currentBranch: Int?) {
+        val call = apiService?.createOrder(
+                receivedCookie,
+                bookId,
+                currentBranch)
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-
-            var retView = convertView
-            if (retView == null) {
-                retView = this@BooksListActivity
-                        .layoutInflater.inflate(R.layout.booklist_item, null)
-            }
-
-            val lB = getItem(position) as LibBook
-            val titleBookTv = retView?.findViewById(R.id.booklist_item_tv_bookTitle) as TextView
-            titleBookTv.text = bookNames!![position]
-
-            val authorsBookTv = retView.findViewById(R.id.booklist_item_tv_bookAuthors) as TextView
-            authorsBookTv.text = if (lB.author!!.isBlank())
-                "Автори : Без авторів"
-            else "Автори: ${lB.author}"
-
-            return retView
-        }
-
-    }
-
-    private inner class DownloaderTask : AsyncTask<Void, Void, String>() {
-        internal var resultJson = ""
-
-        override fun doInBackground(vararg params: Void): String {
-            try {
-                val author = URLEncoder.encode(searchByAuthor, "UTF-8")
-                val year = URLEncoder.encode(searchByYear, "UTF-8")
-                val keywords = URLEncoder.encode(searchByKeywords, "UTF-8")
-                val bookNumber = URLEncoder.encode(searchByNumber, "UTF-8")
-                val bookName = URLEncoder.encode(searchByBookName, "UTF-8")
-
-                val url = URL(domain + "/api/catalog/getAll?take=1000&offset=0"
-                        + "&name=" + bookName + "&author=" + author + "&keyword="
-                        + keywords + "&year=" + year + "&link_name=" + bookNumber)
-
-                resultJson = preferences!!.getJSONFromServer(url, receivedCookie)
-                Log.i(LOG, "JSON " + resultJson)
-
-            } catch (e: Exception) {
-                Log.i(LOG, "BookList json error " + e.message)
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.book_list_container))
-            }
-
-            return resultJson
-        }
-
-        override fun onPostExecute(strJson: String) {
-            super.onPostExecute(strJson)
-            val dataJsonObj: JSONObject
-            try {
-                dataJsonObj = JSONObject(strJson)
-                val tmpObj = dataJsonObj.getJSONObject("response")
-                val booksArray = tmpObj.getJSONArray("data")
-
-                libBooks = arrayOfNulls(booksArray.length())
-                bookNames = arrayOfNulls(booksArray.length())
-
-                for (i in 0 until booksArray.length()) {
-                    val tempObj = booksArray.getJSONObject(i)
-                    val bookId = tempObj.getInt("id")
-                    val category = tempObj.getString("category_id")
-                    val bookName = tempObj.getString("name")
-                    val year = tempObj.getString("year")
-                    val link = tempObj.getString("link")
-                    val linkName = tempObj.getString("link_name")
-                    val fileSize = tempObj.getInt("file_size")
-
-                    val relAuthorArray = tempObj.getJSONArray("rel_author")
-                    var author = ""
-                    for (authorsN in 0 until relAuthorArray.length()) {
-                        val authorObject = relAuthorArray.getJSONObject(authorsN)
-                        if (authorsN == relAuthorArray.length() - 1) {
-                            author += authorObject.getString("name")
-                        } else {
-                            author += authorObject.getString("name") + ", "
-                        }
-                    }
-
-                    val relBranch = tempObj.getJSONArray("rel_branch")
-                    var branchID = 0
-                    if (relBranch.length() != 0) {
-                        val branchObj = relBranch.getJSONObject(0)
-                        branchID = branchObj.getInt("id")
-                    }
-
-                    val shortBookName = LibBook.getShortBookName(bookName)
-
-
-                    //Create book from JSON
-                    libBooks!![i] = LibBook.LibBookBuilder()
-                            .bookId(bookId)
-                            .bookName(shortBookName)
-                            .downloadLink(link)
-                            .category(category)
-                            .fileSize(fileSize.toDouble())
-                            .linkName(linkName)
-                            .year(year)
-                            .author(author)
-                            .branch(branchID)
-                            .build()
-
-                    if (category == "1" || category == "3") {
-                        bookNames!![i] = linkName
-                    } else {
-                        bookNames!![i] = bookName
-                    }
-
+        call?.enqueue(object : Callback<OrderResponse> {
+            override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
+                val resp = response.body().response
+                if (resp == null) {
+                    Toast.makeText(this@BooksListActivity, "Книгу замовити неможливо",
+                            Toast.LENGTH_LONG)
+                            .show()
+                } else {
+                    Toast.makeText(this@BooksListActivity, "Книгу було замовлено",
+                            Toast.LENGTH_LONG)
+                            .show()
                 }
+            }
+
+            override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
+                Toast.makeText(this@BooksListActivity, "Перевірте інтернет з'єднання",
+                        Toast.LENGTH_LONG)
+                        .show()
+            }
+        })
+    }
+
+    private fun fetchBooksList() {
+
+        val call = apiService?.getAllBooks(receivedCookie,
+                searchByBookName, searchByAuthor,
+                searchByKeywords,
+                searchByYear,
+                searchByNumber)
+        call?.enqueue(object : Callback<JsonResponse> {
+            override fun onResponse(call: Call<JsonResponse>, response: Response<JsonResponse>) {
+                libBooks = response.body().response?.books
 
                 registerForContextMenu(booksList)
 
@@ -220,73 +145,53 @@ class BooksListActivity : AppCompatActivity() {
                 hideProgressBar()
 
                 //Maybe server is off or list is empty
-                checkServerStatus(booksArray.length())
+                checkServerStatus(libBooks?.size!!)
+            }
 
-
-            } catch (e: Exception) {
-                Log.i(LOG, "BookList Error + " + e.message)
-//                preferences!!.savedIsAuthorized = false
+            override fun onFailure(call: Call<JsonResponse>, t: Throwable) {
+                Log.e(LOG, "BookList Error + " + t.message)
                 showSnackBar("Перевірте інтернет з'єднання",
                         findViewById(R.id.book_list_container))
             }
-
-        }
-
-        private fun hideProgressBar() {
-            val progressBar = findViewById(R.id.book_list_progress) as ProgressBar?
-            progressBar?.visibility = View.INVISIBLE
-        }
-
+        })
     }
 
-    private fun checkServerStatus(len: Int) {
-        if (len == 0) {
-            val builder: AlertDialog.Builder
-            builder = AlertDialog.Builder(this@BooksListActivity)
-            builder.setPositiveButton("ОК") { dialog, which -> finish() }
-            builder.setTitle("За вашим запитом нічого не знайдено.").show()
-        }
-    }
+    private inner class BookListAdapter(var books: List<Book?>?)
+        : ArrayAdapter<Book>(this@BooksListActivity, android.R.layout.simple_list_item_1, books) {
 
-    private inner class OrderCreator : AsyncTask<Int, Void, String>() {
-        internal var resultJson = ""
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        override fun doInBackground(vararg params: Int?): String {
-            try {
-                val bookID = params[0]
-                val branch = params[1]
-                Log.i(LOG, "bookID = " + bookID)
-                Log.i(LOG, "branch = " + branch)
-
-                val url = URL(domain + "/api/order/createOrder?book_id="
-                        + bookID + "&branch_id=" + branch)
-
-                resultJson = preferences!!.getJSONFromServer(url, receivedCookie)
-                Log.i(LOG, "JSON " + resultJson)
-
-            } catch (e: Exception) {
-                Toast.makeText(this@BooksListActivity, "Перевірте інтернет з'єднання", Toast.LENGTH_LONG)
-                        .show()
+            var retView = convertView
+            if (retView == null) {
+                retView = this@BooksListActivity
+                        .layoutInflater.inflate(R.layout.booklist_item, null)
             }
 
-            return resultJson
-        }
+            val lB = getItem(position) as Book
+            val titleBookTv = retView?.findViewById(R.id.booklist_item_tv_bookTitle) as TextView
 
-        override fun onPostExecute(strJson: String) {
-            super.onPostExecute(strJson)
-            val dataJsonObj: JSONObject
-            try {
-                dataJsonObj = JSONObject(strJson)
-                val tmpObj = dataJsonObj.getJSONObject("response")
-                Toast.makeText(this@BooksListActivity, "Книгу було замовлено", Toast.LENGTH_LONG)
-                        .show()
-            } catch (e: JSONException) {
-                Toast.makeText(this@BooksListActivity, "Книгу замовити неможливо", Toast.LENGTH_LONG)
-                        .show()
+            val category = books!![position]?.categoryId
+            val linkName = books!![position]?.linkName
+            val title = Book.getShortBookName(books!![position]?.name!!)
+
+
+
+            if (category == 1 || category == 3) {
+                titleBookTv.text = linkName
+            } else {
+                titleBookTv.text = title
             }
 
+            val authorsBookTv = retView.findViewById(R.id.booklist_item_tv_bookAuthors) as TextView
+            authorsBookTv.text = if (lB.authors == null)
+                "Автори : Без авторів"
+            else "Автори: ${lB.authors}"
+
+            return retView
         }
+
     }
+
 
     private inner class FileDownloader internal constructor(internal var file: File)
         : AsyncTask<String, Int, File>() {
@@ -395,6 +300,19 @@ class BooksListActivity : AppCompatActivity() {
     private fun downloadFile(url: String?, file: File) {
         val fl = FileDownloader(file)
         fl.execute(url)
+    }
+
+    private fun hideProgressBar() {
+        val progressBar = findViewById(R.id.book_list_progress) as ProgressBar?
+        progressBar?.visibility = View.INVISIBLE
+    }
+
+    private fun checkServerStatus(len: Int) {
+        if (len == 0) {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this@BooksListActivity)
+            builder.setPositiveButton("ОК") { dialog, which -> finish() }
+            builder.setTitle("За вашим запитом нічого не знайдено.").show()
+        }
     }
 
 }
