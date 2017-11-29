@@ -2,6 +2,8 @@ package natus.diit.com.libhelper.rest
 
 import natus.diit.com.libhelper.model.book.JsonResponse
 import natus.diit.com.libhelper.model.order.OrderResponse
+import natus.diit.com.libhelper.model.user.CheckUserResponse
+import natus.diit.com.libhelper.model.user.LogOutResponse
 import retrofit2.Call
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -26,4 +28,10 @@ interface ApiInterface {
                     @Query("branch_id") branchId: Int?
 
     ): Call<OrderResponse>
+
+    @POST("user/signout")
+    fun logOut(@Header("Cookie") cookie: String?) : Call<LogOutResponse>
+
+    @POST("user/check")
+    fun checkUser(@Header("Cookie") cookie: String?) : Call<CheckUserResponse>
 }
