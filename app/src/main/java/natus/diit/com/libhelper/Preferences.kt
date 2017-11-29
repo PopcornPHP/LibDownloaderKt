@@ -15,6 +15,8 @@ import android.text.Html
 import android.util.Log
 import android.view.View
 import natus.diit.com.libhelper.model.book.Book
+import natus.diit.com.libhelper.rest.ApiClient
+import natus.diit.com.libhelper.rest.ApiInterface
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -25,6 +27,7 @@ import javax.net.ssl.HttpsURLConnection
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
 const val LOG = "MyLog"
+val apiService = ApiClient.client?.create(ApiInterface::class.java)
 
 fun showSnackBar(text: String = "Перевірте інтернет з'єднання", view: View) {
     Snackbar.make(view,
