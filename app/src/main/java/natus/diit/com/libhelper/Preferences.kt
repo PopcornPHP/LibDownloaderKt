@@ -3,7 +3,6 @@ package natus.diit.com.libhelper
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.support.design.widget.Snackbar
@@ -13,15 +12,15 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.Html
+import android.util.Log
 import android.view.View
-import org.jetbrains.anko.custom.ankoView
+import natus.diit.com.libhelper.model.book.Book
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.security.cert.X509Certificate
 import java.text.DecimalFormat
-import javax.net.ssl.*
+import javax.net.ssl.HttpsURLConnection
 
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
@@ -183,6 +182,7 @@ class Preferences : Application {
         urlConnection.doOutput = true
         urlConnection.requestMethod = "POST"
         urlConnection.setRequestProperty("Cookie", cookie)
+        Log.i(LOG, "$cookie")
         urlConnection.connect()
 
         val inputStream = urlConnection.inputStream
@@ -228,26 +228,27 @@ class Preferences : Application {
         return buffer.toString()
     }
 
-    fun showBookInfo(lb: LibBook, builder: AlertDialog.Builder) {
+    fun showBookInfo(lb: Book?, builder: AlertDialog.Builder) {
 
         val formattedDouble = DecimalFormat("#0.00")
-                .format(lb.fileSize / (1024 * 1024))
+                .format(lb?.fileSize!! / (1024 * 1024))
 
         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
             builder.setTitle("Інформація про книгу")
-                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.bookName
+                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.name
                             + "<br>" + ("<b>" + "Скорочена назва: " + "</b>") + lb.linkName
-                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.author
+                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.authors
                             + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
                             + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб"))
                     .show()
         } else {
             builder.setTitle("Інформація про книгу")
-                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.bookName
+                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.name
                             + "<br>" + ("<b>" + "Скорочена назва: " + "</b>") + lb.linkName
-                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.author
+                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.authors
                             + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
-                            + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб", Html.FROM_HTML_MODE_LEGACY))
+                            + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб",
+                            Html.FROM_HTML_MODE_LEGACY))
                     .show()
         }
     }
