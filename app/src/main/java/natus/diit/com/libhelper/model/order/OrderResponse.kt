@@ -1,5 +1,5 @@
 package natus.diit.com.libhelper.model.order
 
-class OrderResponce {
+class OrderResponse {
     var response:Response? = null
 }
