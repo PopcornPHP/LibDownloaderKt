@@ -8,20 +8,16 @@ import android.graphics.drawable.Drawable
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.Html
 import android.util.Log
 import android.view.View
-import natus.diit.com.libhelper.model.book.Book
 import natus.diit.com.libhelper.rest.ApiClient
 import natus.diit.com.libhelper.rest.ApiInterface
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.DecimalFormat
 import javax.net.ssl.HttpsURLConnection
 
 //Auxiliary class which works with SharesPreferences
@@ -229,30 +225,5 @@ class Preferences : Application {
             buffer.append(line)
         }
         return buffer.toString()
-    }
-
-    fun showBookInfo(lb: Book?, builder: AlertDialog.Builder) {
-
-        val formattedDouble = DecimalFormat("#0.00")
-                .format(lb?.fileSize!! / (1024 * 1024))
-
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
-            builder.setTitle("Інформація про книгу")
-                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.name
-                            + "<br>" + ("<b>" + "Скорочена назва: " + "</b>") + lb.linkName
-                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.authors
-                            + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
-                            + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб"))
-                    .show()
-        } else {
-            builder.setTitle("Інформація про книгу")
-                    .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.name
-                            + "<br>" + ("<b>" + "Скорочена назва: " + "</b>") + lb.linkName
-                            + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.authors
-                            + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
-                            + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб",
-                            Html.FROM_HTML_MODE_LEGACY))
-                    .show()
-        }
     }
 }
