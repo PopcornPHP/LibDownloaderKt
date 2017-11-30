@@ -28,15 +28,13 @@ class LoginActivity : AppCompatActivity() {
 
     private var isAuthorized: Boolean = false
 
-    private var cardNumber: String? = null
-    private var password: String? = null
+    private var cardNumber: String = ""
+    private var password: String = ""
     private var isRemembered: Boolean = false
 
-    private var authorizationError: String? = null
+    private var authorizationError: String = ""
 
-    private var preferences: Preferences? = null
-    private var domain: String? = null
-
+    private lateinit var preferences: Preferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +43,6 @@ class LoginActivity : AppCompatActivity() {
 
         preferences = Preferences(this)
 
-        domain = preferences!!.domain
-
         signInButton = findViewById(R.id.sign_in_button) as Button
         //registerButton = (Button) findViewById(R.id.registerButton);
 
@@ -54,26 +50,26 @@ class LoginActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.passwordText) as EditText
         loginCheckBox = findViewById(R.id.checkboxID) as CheckBox
 
-        isRemembered = preferences!!.savedIsRemembered
+        isRemembered = preferences.savedIsRemembered
         if (isRemembered) {
-            etLibCardNumberText!!.setText(preferences!!.savedLogin)
-            etPassword!!.setText(preferences!!.savedPassword)
-            loginCheckBox!!.isChecked = isRemembered
+            etLibCardNumberText?.setText(preferences.savedLogin)
+            etPassword?.setText(preferences.savedPassword)
+            loginCheckBox?.isChecked = isRemembered
         }
 
-        signInButton!!.setOnClickListener {
+        signInButton?.setOnClickListener {
             cardNumber = etLibCardNumberText!!.text.toString()
             password = etPassword!!.text.toString()
             isRemembered = loginCheckBox!!.isChecked
 
             if (isRemembered) {
-                preferences!!.savedLogin = cardNumber
-                preferences!!.savedPassword = password
-                preferences!!.savedIsRemembered = isRemembered
+                preferences.savedLogin = cardNumber
+                preferences.savedPassword = password
+                preferences.savedIsRemembered = isRemembered
             } else {
-                preferences!!.savedLogin = ""
-                preferences!!.savedPassword = ""
-                preferences!!.savedIsRemembered = false
+                preferences.savedLogin = ""
+                preferences.savedPassword = ""
+                preferences.savedIsRemembered = false
             }
 
             logIn()
@@ -105,24 +101,22 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<CheckUserLogIn>,
                                     response: Response<CheckUserLogIn>) {
                 val headers = response.headers()
-                preferences?.savedReceivedCookie = headers["Set-Cookie"]
+                preferences.savedReceivedCookie = headers["Set-Cookie"]
 
                 val user = response.body().user
 
                 if (user != null) {
                     isAuthorized = true
                 } else {
-                    if (password == "")
-                        authorizationError = "Ви не ввели пароль"
-                    else if (cardNumber == "")
-                        authorizationError = "Ви не ввели читацький номер"
-                    else
-                        authorizationError = "Ви вказали невірні дані"
+                    authorizationError = when {
+                        password == "" -> "Ви не ввели пароль"
+                        cardNumber == "" -> "Ви не ввели читацький номер"
+                        else -> "Ви вказали невірні дані"
+                    }
                     isAuthorized = false
-                    Log.i(LOG, "authorizationError = " + authorizationError!!)
                 }
 
-                preferences?.savedIsAuthorized = isAuthorized
+                preferences.savedIsAuthorized = isAuthorized
 
                 if (isAuthorized) {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -130,7 +124,7 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 } else {
                     val mySnackbar = Snackbar.make(findViewById(R.id.passw_login_form),
-                            authorizationError!!, Snackbar.LENGTH_LONG)
+                            authorizationError, Snackbar.LENGTH_LONG)
 
                     mySnackbar.show()
                 }
