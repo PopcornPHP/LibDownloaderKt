@@ -25,7 +25,7 @@ class OrderListActivity : AppCompatActivity() {
 
     private var orders: List<Order?>? = null
     private var receivedCookie: String? = null
-    private var booksList: ListView? = null
+    private var orderList: ListView? = null
 
     private var preferences: Preferences? = null
     private var domain: String? = null
@@ -42,20 +42,21 @@ class OrderListActivity : AppCompatActivity() {
 
         domain = preferences!!.domain
 
-        booksList = findViewById(R.id.order_books) as ListView
-        booksList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        orderList = findViewById(R.id.orders_list) as ListView
+        orderList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val lb = orders!![position]
 
             val bookID = lb!!.relBook?.id
 
             val builder: AlertDialog.Builder =
                     AlertDialog.Builder(this@OrderListActivity)
-            builder.setPositiveButton("Скасувати замовлення") { dialog, which -> CancelOrderTask().execute(bookID) }
+            builder.setPositiveButton("Скасувати замовлення") { dialog, which ->
+                CancelOrderTask().execute(bookID)
+            }
 
-            Book.showOrderInfo(lb, builder)
+            Order.showOrderInfo(lb, builder)
         }
 
-        //OrderListTask().execute()
         fetchOrdersList()
     }
 
@@ -66,11 +67,12 @@ class OrderListActivity : AppCompatActivity() {
             override fun onResponse(call: Call<OrderJsonResponse>,
                                     response: Response<OrderJsonResponse>) {
                 orders = response.body().response?.orders
-
-                registerForContextMenu(booksList)
+                Log.i(LOG, "$orders")
+                registerForContextMenu(orderList)
 
                 val adapter = OrderListAdapter(orders)
-                booksList!!.adapter = adapter
+
+                orderList!!.adapter = adapter
 
                 //Maybe server is off or list is empty
                 checkServerStatus(orders?.size!!)
@@ -106,128 +108,6 @@ class OrderListActivity : AppCompatActivity() {
         }
     }
 
-
-//    private inner class OrderListTask : AsyncTask<Void, Void, String>() {
-//        internal var resultJson = ""
-//
-//        override fun doInBackground(vararg params: Void): String {
-//            try {
-//                val url = URL(domain!! + "/api/order/getAll")
-//                resultJson = preferences!!.getJSONFromServer(url, receivedCookie)
-//                Log.i(LOG, "JSON " + resultJson)
-//
-//            } catch (e: Exception) {
-//                showSnackBar("Перевірте інтернет з'єднання",
-//                        findViewById(R.id.order_list_container))
-//            }
-//
-//            return resultJson
-//        }
-//
-//        override fun onPostExecute(strJson: String) {
-//            super.onPostExecute(strJson)
-//            val dataJsonObj: JSONObject
-//            try {
-//                dataJsonObj = JSONObject(strJson)
-//                val tmpObj = dataJsonObj.getJSONObject("response")
-//                val booksArray = tmpObj.getJSONArray("data")
-//
-//                orders = arrayOfNulls(booksArray.length())
-//                bookNames = arrayOfNulls(booksArray.length())
-//                var deliveryPoint: String
-//                for (i in 0 until booksArray.length()) {
-//                    val tempObj = booksArray.getJSONObject(i)
-//                    val relBookObj = tempObj.getJSONObject("rel_book")
-//
-//                    try {
-//                        val relBranchObj = tempObj.getJSONObject("rel_branch")
-//                        deliveryPoint = relBranchObj.getString("name")
-//                    } catch (jE: JSONException) {
-//                        deliveryPoint = ""
-//                    }
-//
-//                    val bookId = relBookObj.getInt("id")
-//                    val category = relBookObj.getString("category_id")
-//                    val bookName = relBookObj.getString("name")
-//                    val link = relBookObj.getString("link")
-//                    val linkName = relBookObj.getString("link_name")
-//                    val fileSize = relBookObj.getInt("file_size")
-//                    val year = relBookObj.getString("year")
-//                    val orderStatus = tempObj.getString("status")
-//
-//                    val relAuthorArray = relBookObj.getJSONArray("rel_author")
-//                    var author = ""
-//                    for (k in 0 until relAuthorArray.length()) {
-//                        val authorObject = relAuthorArray.getJSONObject(k)
-//                        if (k == relAuthorArray.length() - 1) {
-//                            author += authorObject.getString("name")
-//                        } else {
-//                            author += authorObject.getString("name") + ", "
-//                        }
-//                    }
-//
-//                    var readableStatus: String
-//                    when (orderStatus) {
-//                        "new" -> readableStatus = "нове замовлення"
-//                        "process" -> readableStatus = "на обробці"
-//                        "wait" -> readableStatus = "очікує отримання"
-//                        "success" -> readableStatus = "успішний"
-//                        "absent" -> readableStatus = "нема в наявності"
-//                        "cancel" -> readableStatus = "скасовано"
-//                        "cancelByUser" -> readableStatus = "скасовано користувачем"
-//                        else -> readableStatus = "невідомий"
-//                    }
-//
-//                    val shortBookName = LibBook.getShortBookName(bookName)
-//
-//                    //Create book from JSON
-//                    orders!![i] = LibBook.LibBookBuilder()
-//                            .bookId(bookId)
-//                            .bookName(shortBookName)
-//                            .downloadLink(link)
-//                            .category(category)
-//                            .fileSize(fileSize.toDouble())
-//                            .linkName(linkName)
-//                            .year(year)
-//                            .author(author)
-//                            .delPoint(deliveryPoint)
-//                            .orderStatus(readableStatus)
-//                            .build()
-//
-//                    if (category == "1" || category == "3") {
-//                        bookNames!![i] = linkName
-//                    } else {
-//                        bookNames!![i] = bookName
-//                    }
-//                }
-//
-//                registerForContextMenu(booksList)
-//
-//                val adapter = OrderListAdapter(orders)
-//                booksList!!.adapter = adapter
-//
-//                //Maybe server is off or list is empty
-//                checkServerStatus(booksArray.length())
-//
-//            } catch (e: Exception) {
-//                Log.i(LOG, "JSON Error " + e.message)
-//            }
-//
-//        }
-//
-//        private fun getRealBookName(bookName: String): String {
-//            var bn = ""
-//            for (z in 0 until bookName.length) {
-//                if (bookName[z] != '/') {
-//                    bn += bookName[z]
-//                } else {
-//                    break
-//                }
-//            }
-//            return bn
-//        }
-//    }
-
     private inner class OrderListAdapter(orders: List<Order?>?)
         : ArrayAdapter<Order>(this@OrderListActivity, android.R.layout.simple_list_item_1, orders) {
 
@@ -240,6 +120,7 @@ class OrderListActivity : AppCompatActivity() {
                 retView = this@OrderListActivity
                         .layoutInflater.inflate(R.layout.orderlist_item, null)
             }
+            titleBookTv = retView?.findViewById(R.id.orderList_item_tv_bookTitle) as TextView
 
             val currentOrder = getItem(position) as Order
             val currentBook = currentOrder.relBook
@@ -266,8 +147,6 @@ class OrderListActivity : AppCompatActivity() {
                 else -> "невідомий"
             }
 
-
-            titleBookTv = retView?.findViewById(R.id.orderList_item_tv_bookTitle) as TextView
             titleBookTv.text = currentBook?.name
 
             orderStatusTv = retView.findViewById(R.id.orderList_item_tv_orderStatus) as TextView
