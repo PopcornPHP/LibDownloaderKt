@@ -1,7 +1,6 @@
 package natus.diit.com.libhelper
 
 import android.graphics.Color
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
@@ -14,12 +13,10 @@ import android.widget.*
 import natus.diit.com.libhelper.model.book.Book
 import natus.diit.com.libhelper.model.order.Order
 import natus.diit.com.libhelper.model.order.OrderJsonResponse
-import org.json.JSONException
-import org.json.JSONObject
+import natus.diit.com.libhelper.model.order.OrderResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.URL
 
 class OrderListActivity : AppCompatActivity() {
 
@@ -44,24 +41,46 @@ class OrderListActivity : AppCompatActivity() {
 
         orderList = findViewById(R.id.orders_list) as ListView
         orderList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            val lb = orders!![position]
+            val order = orders!![position]
 
-            val bookID = lb!!.relBook?.id
+            val bookID = order!!.relBook?.id
 
             val builder: AlertDialog.Builder =
                     AlertDialog.Builder(this@OrderListActivity)
             builder.setPositiveButton("Скасувати замовлення") { dialog, which ->
-                CancelOrderTask().execute(bookID)
+                cancelOrder(bookID)
             }
 
-            Order.showOrderInfo(lb, builder)
+            Order.showOrderInfo(order, builder)
         }
 
         fetchOrdersList()
     }
 
-    private fun fetchOrdersList() {
+    private fun cancelOrder(bookID: Int?) {
+        val call = apiService?.cancelOrder(receivedCookie, bookID)
 
+        call?.enqueue(object : Callback<OrderResponse> {
+            override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
+                val resp = response.body().response
+                if (resp == null) {
+                    showSnackBar("Замовлення скасувати неможливо",
+                            findViewById(R.id.order_list_container))
+                } else {
+                    showSnackBar("Замовлення було скасовано",
+                            findViewById(R.id.order_list_container))
+                }
+            }
+
+            override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
+                Toast.makeText(this@OrderListActivity, "Перевірте інтернет з'єднання",
+                        Toast.LENGTH_LONG)
+                        .show()
+            }
+        })
+    }
+
+    private fun fetchOrdersList() {
         val call = apiService?.getAllOrders(receivedCookie)
         call?.enqueue(object : Callback<OrderJsonResponse> {
             override fun onResponse(call: Call<OrderJsonResponse>,
@@ -86,7 +105,6 @@ class OrderListActivity : AppCompatActivity() {
             }
         })
     }
-
 
     private fun checkServerStatus(len: Int) {
         if (len == 0) {
@@ -172,43 +190,6 @@ class OrderListActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    private inner class CancelOrderTask : AsyncTask<Int, Void, String>() {
-        internal var resultJson = ""
-
-        override fun doInBackground(vararg params: Int?): String {
-            try {
-                val bookID = params[0]
-                val url = URL(domain + "/api/order/deleteOrder?book_id="
-                        + bookID)
-                resultJson = preferences!!.getJSONFromServer(url, receivedCookie)
-                Log.i(LOG, "JSON " + resultJson)
-
-            } catch (e: Exception) {
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.order_list_container))
-            }
-
-            return resultJson
-        }
-
-        override fun onPostExecute(strJson: String) {
-            super.onPostExecute(strJson)
-            val dataJsonObj: JSONObject
-            try {
-                Log.i(LOG, "cancelGot " + strJson)
-                dataJsonObj = JSONObject(strJson)
-                val tmpObj = dataJsonObj.getJSONObject("response")
-                Toast.makeText(this@OrderListActivity, "Замовлення було скасовано", Toast.LENGTH_LONG)
-                        .show()
-            } catch (e: JSONException) {
-                Toast.makeText(this@OrderListActivity, "Замовлення скасувати неможливо",
-                        Toast.LENGTH_LONG)
-                        .show()
-            }
-
-        }
     }
 
 }
