@@ -32,14 +32,14 @@ class BooksListActivity : AppCompatActivity() {
     private var booksList: ListView? = null
     private var libBooks: List<Book?>? = null
 
-    private var searchByNumber: String? = null
-    private var searchByAuthor: String? = null
-    private var searchByYear: String? = null
-    private var searchByKeywords: String? = null
-    private var searchByBookName: String? = null
+    private lateinit var searchByNumber: String
+    private lateinit var searchByAuthor: String
+    private lateinit var searchByYear: String
+    private lateinit var searchByKeywords: String
+    private lateinit var searchByBookName: String
 
     private var receivedCookie: String? = null
-    private var preferences: Preferences? = null
+    private lateinit var preferences: Preferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +49,7 @@ class BooksListActivity : AppCompatActivity() {
 
         preferences = Preferences(this)
 
-        searchByYear = preferences!!.savedSearchByYear
-        searchByNumber = preferences!!.savedSearchByNumber
-        searchByBookName = preferences!!.savedSearchByBookName
-        searchByKeywords = preferences!!.savedSearchByKeywords
-        searchByAuthor = preferences!!.savedSearchByAuthor
-        receivedCookie = preferences!!.savedReceivedCookie
+        setSearchFields()
 
         booksList = findViewById(R.id.list_books) as ListView
         booksList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
@@ -88,6 +83,15 @@ class BooksListActivity : AppCompatActivity() {
 
 
         fetchBooksList()
+    }
+
+    private fun setSearchFields() {
+        searchByYear = intent.getStringExtra(MainActivity.SEARCH_YEAR)
+        searchByNumber = intent.getStringExtra(MainActivity.SEARCH_NUMBER)
+        searchByBookName = intent.getStringExtra(MainActivity.SEARCH_BOOK_NAME)
+        searchByKeywords = intent.getStringExtra(MainActivity.SEARCH_KEYWORDS)
+        searchByAuthor = intent.getStringExtra(MainActivity.SEARCH_AUTHOR)
+        receivedCookie = preferences.savedReceivedCookie
     }
 
     private fun createOrder(bookId: Int, currentBranch: Int?) {

@@ -33,22 +33,22 @@ class MainActivity : AppCompatActivity() {
 
     private var receivedCookie: String? = null
 
-    private var searchByNumber: String? = null
-    private var searchByAuthor: String? = null
-    private var searchByYear: String? = null
-    private var searchByKeywords: String? = null
-    private var searchByBookName: String? = null
+    private lateinit var searchByNumber: String
+    private lateinit var searchByAuthor: String
+    private lateinit var searchByYear: String
+    private lateinit var searchByKeywords: String
+    private lateinit var searchByBookName: String
 
     private var isAuthorized: Boolean = false
     private var isRemembered: Boolean = false
 
-    private var preferences: Preferences? = null
-    private var domain: String? = null
+    private lateinit var preferences: Preferences
 
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         //suspendApp()
 
         preferences = Preferences(this)
@@ -59,8 +59,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setToolbar()
-
-        domain = preferences!!.domain
 
         etSearchByNumber = findViewById(R.id.search_number_field) as EditText
         etSearchByAuthor = findViewById(R.id.searchAuthor) as EditText
@@ -76,13 +74,12 @@ class MainActivity : AppCompatActivity() {
             searchByYear = etSearchByYear!!.text.toString()
             searchByBookName = etSearchByBookName!!.text.toString()
 
-            preferences!!.savedSearchByNumber = searchByNumber
-            preferences!!.savedSearchByAuthor = searchByAuthor
-            preferences!!.savedSearchByKeywords = searchByKeywords
-            preferences!!.savedSearchByYear = searchByYear
-            preferences!!.savedSearchByBookName = searchByBookName
-
             val intent = Intent(this@MainActivity, BooksListActivity::class.java)
+            intent.putExtra(SEARCH_AUTHOR, searchByAuthor)
+            intent.putExtra(SEARCH_NUMBER, searchByNumber)
+            intent.putExtra(SEARCH_KEYWORDS, searchByNumber)
+            intent.putExtra(SEARCH_YEAR, searchByYear)
+            intent.putExtra(SEARCH_BOOK_NAME, searchByBookName)
             startActivity(intent)
         }
         btnSearch.setOnTouchListener { v, event ->
@@ -205,6 +202,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        internal val SEARCH_AUTHOR = "search_author"
+        internal val SEARCH_NUMBER = "search_number"
+        internal val SEARCH_KEYWORDS = "search_keywords"
+        internal val SEARCH_YEAR = "search_year"
+        internal val SEARCH_BOOK_NAME = "search_book_name"
 
         private val PERMISSION_REQUEST_CODE = 10
         private var isBackPressed = false
@@ -251,4 +253,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+
 }
