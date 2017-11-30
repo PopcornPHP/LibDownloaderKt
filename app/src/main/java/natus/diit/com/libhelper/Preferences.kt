@@ -54,14 +54,14 @@ class Preferences : Application {
     private lateinit var prefs: SharedPreferences
     private val sharedPrefsFile = "MyPreferences"
 
-    var savedLogin: String? = null
+    var savedLogin: String = ""
         set(value) {
             field = value
             val ed = prefs.edit()
             ed.putString("login", value)
             ed.apply()
         }
-    var savedPassword: String? = null
+    var savedPassword: String = ""
         set(value) {
             field = value
             val ed = prefs.edit()
@@ -86,7 +86,7 @@ class Preferences : Application {
             ed.apply()
         }
 
-    var savedReceivedCookie: String? = null
+    var savedReceivedCookie: String = ""
         set(value) {
             field = value
 
@@ -109,7 +109,7 @@ class Preferences : Application {
             ed.apply()
         }
 
-    var savedSearchByYear: String? = null
+    var savedSearchByYear: String = ""
         set(value) {
             field = value
 
@@ -117,7 +117,7 @@ class Preferences : Application {
             ed.putString("searchByYear", value)
             ed.apply()
         }
-    var savedSearchByNumber: String? = null
+    var savedSearchByNumber: String = ""
         set(value) {
             field = value
 
@@ -125,7 +125,7 @@ class Preferences : Application {
             ed.putString("searchByNumber", value)
             ed.apply()
         }
-    var savedSearchByBookName: String? = null
+    var savedSearchByBookName: String = ""
         set(value) {
             field = value
 
@@ -133,7 +133,7 @@ class Preferences : Application {
             ed.putString("searchByBookName", value)
             ed.apply()
         }
-    var savedSearchByKeywords: String? = null
+    var savedSearchByKeywords: String = ""
         set(value) {
             field = value
 
@@ -141,7 +141,7 @@ class Preferences : Application {
             ed.putString("searchByKeywords", value)
             ed.apply()
         }
-    var savedSearchByAuthor: String? = null
+    var savedSearchByAuthor: String = ""
         set(value) {
             field = value
 
