@@ -65,29 +65,25 @@ class BooksListActivity : AppCompatActivity() {
             if (fileSize > 0) {
                 builder.setPositiveButton("Завантажити книгу") { dialog, which ->
                     val downloadLink = lb.link
-
-                    Log.i(LOG, "dL = " + downloadLink)
-                    Log.i(LOG, "category = " + lb.categoryId)
                     val folder = File(Environment.getExternalStorageDirectory().toString() +
                             File.separator + "DNURTBooks")
                     Log.i(LOG, "File path = " + folder.absolutePath)
                     if (!folder.exists()) {
                         folder.mkdir()
                     }
-
                     val uri = Uri.parse(downloadLink)
-
                     val file = File(folder, uri.lastPathSegment)
 
                     downloadFile(downloadLink, file)
                 }
             }
 
-            builder.setNegativeButton("Замовити книгу") { dialog, which ->
-                createOrder(lb.id, lb.currentBranch)
+            if (lb.isEnableOrder!!) {
+                builder.setNegativeButton("Замовити книгу") { dialog, which ->
+                    createOrder(lb.id, lb.currentBranch)
+                }
             }
-
-            preferences!!.showBookInfo(lb, builder)
+            Book.showBookInfo(lb, builder)
         }
 
 
@@ -169,8 +165,6 @@ class BooksListActivity : AppCompatActivity() {
             val category = books!![position]?.categoryId
             val linkName = books!![position]?.linkName
             val title = Book.getShortBookName(books!![position]?.name!!)
-
-
 
             if (category == 1 || category == 3) {
                 titleBookTv.text = linkName
