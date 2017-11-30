@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 class CheckUserResponse {
 
     @SerializedName("response")
-    var isAuthorized:Boolean? = null
+    var flag:Boolean? = null
 }
