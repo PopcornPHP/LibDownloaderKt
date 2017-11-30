@@ -35,6 +35,11 @@ interface ApiInterface {
 
     ): Call<OrderResponse>
 
+    @POST("order/deleteOrder")
+    fun cancelOrder(@Header("Cookie") cookie: String?,
+                    @Query("book_id") bookId: Int?
+    ): Call<OrderResponse>
+
     @POST("user/signout")
     fun logOut(@Header("Cookie") cookie: String?) : Call<LogOutResponse>
 
