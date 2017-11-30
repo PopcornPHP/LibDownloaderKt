@@ -3,36 +3,24 @@ package natus.diit.com.libhelper.model.book
 import android.support.v7.app.AlertDialog
 import android.text.Html
 import com.google.gson.annotations.SerializedName
-import natus.diit.com.libhelper.model.order.Order
+import java.text.DecimalFormat
 
 class Book(@field:SerializedName("id")
            var id: Int,
            @field:SerializedName("category_id")
            var categoryId: Int?,
-           @field:SerializedName("mfn")
-           var mfn: Int?,
            @field:SerializedName("name")
            var name: String?,
            @field:SerializedName("year")
            var year: String?,
-           @field:SerializedName("udk")
-           var udk: String?,
            @field:SerializedName("link")
            var link: String,
            @field:SerializedName("link_name")
            var linkName: String?,
            @field:SerializedName("file_size")
            var fileSize: Double?,
-           @field:SerializedName("is_free_download")
-           var isFreeDownload: Boolean?,
            @field:SerializedName("is_enable_order")
            var isEnableOrder: Boolean?,
-           @field:SerializedName("copies")
-           var copies: String?,
-           @field:SerializedName("cipher")
-           var cipher: String?,
-           @field:SerializedName("author_sign")
-           var authorSign: String?,
            @field:SerializedName("branch_id")
            var branchId: String?
 ) {
@@ -64,23 +52,26 @@ class Book(@field:SerializedName("id")
             return bn
         }
 
-        fun showOrderInfo(order: Order?, builder: AlertDialog.Builder) {
-            val bookName = order?.relBook?.name
-            val delPoint = order?.relBook?.relBranch?.get(0)
+        fun showBookInfo(lb: Book?, builder: AlertDialog.Builder) {
+
+            val formattedDouble = DecimalFormat("#0.00")
+                    .format(lb?.fileSize!! / (1024 * 1024))
 
             if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N) {
-                builder.setTitle("Інформація про замовлення")
-                        .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + bookName
-                                + "<br>" + ("<b>" + "Автори: " + "</b>") + order?.relBook?.authors
-                                + "<br>" + ("<b>" + "Рік: " + "</b>") + order?.relBook?.year
-                                + "<br>" + ("<b>" + "Місце видачі: " + "</b>") + delPoint))
+                builder.setTitle("Інформація про книгу")
+                        .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.name
+                                + "<br>" + ("<b>" + "Скорочена назва: " + "</b>") + lb.linkName
+                                + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.authors
+                                + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
+                                + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб"))
                         .show()
             } else {
-                builder.setTitle("Інформація про замовлення")
-                        .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + bookName
-                                + "<br>" + ("<b>" + "Автори: " + "</b>") + order?.relBook?.authors
-                                + "<br>" + ("<b>" + "Рік: " + "</b>") + order?.relBook?.year
-                                + "<br>" + ("<b>" + "Місце видачі: " + "</b>") + delPoint,
+                builder.setTitle("Інформація про книгу")
+                        .setMessage(Html.fromHtml("<b>" + "Назва книги: " + "</b>" + lb.name
+                                + "<br>" + ("<b>" + "Скорочена назва: " + "</b>") + lb.linkName
+                                + "<br>" + ("<b>" + "Автори: " + "</b>") + lb.authors
+                                + "<br>" + ("<b>" + "Рік: " + "</b>") + lb.year
+                                + "<br>" + ("<b>" + "Розмір: " + "</b>") + formattedDouble + " мб",
                                 Html.FROM_HTML_MODE_LEGACY))
                         .show()
             }
