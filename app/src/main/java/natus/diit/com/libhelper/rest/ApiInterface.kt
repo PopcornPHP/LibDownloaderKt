@@ -1,6 +1,7 @@
 package natus.diit.com.libhelper.rest
 
 import natus.diit.com.libhelper.model.book.JsonResponse
+import natus.diit.com.libhelper.model.order.OrderJsonResponse
 import natus.diit.com.libhelper.model.order.OrderResponse
 import natus.diit.com.libhelper.model.user.CheckUserLogIn
 import natus.diit.com.libhelper.model.user.CheckUserResponse
@@ -22,6 +23,10 @@ interface ApiInterface {
                     @Query("take") take: Int? = 1000,
                     @Query("offset") offset: Int? = 0
     ): Call<JsonResponse>
+
+    @POST("order/getAll")
+    fun getAllOrders(@Header("Cookie") cookie: String?
+    ): Call<OrderJsonResponse>
 
     @POST("order/createOrder")
     fun createOrder(@Header("Cookie") cookie: String?,
