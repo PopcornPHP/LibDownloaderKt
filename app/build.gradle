@@ -8,8 +8,8 @@ android {
         applicationId "natus.diit.com.libhelper"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 7
-        versionName "2.5"
+        versionCode 9
+        versionName "3.0s"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -32,6 +32,12 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     compile 'org.jetbrains.anko:anko-common:0.9'
+
+    //Retrofit
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+
 }
 repositories {
     mavenCentral()
