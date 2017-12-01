@@ -108,7 +108,27 @@ class BooksListActivity : AppCompatActivity() {
                             "Книгу замовити неможливо").show()
                 } else {
                     showSnackBar(findViewById(R.id.book_list_container),
-                            "Книгу було замовлено").show()
+                            "Книгу було замовлено").setAction("Відмінити") {
+                        val cancelCall = libBookApi?.cancelOrder(receivedCookie, bookId)
+
+                        cancelCall?.enqueue(object : Callback<OrderResponse> {
+                            override fun onResponse(call: Call<OrderResponse>,
+                                                    response: Response<OrderResponse>) {
+                                val cancelResp = response.body().response
+                                if (cancelResp == null) {
+                                    showSnackBar(findViewById(R.id.book_list_container),
+                                            "Замовлення скасувати неможливо").show()
+                                } else {
+                                    showSnackBar(findViewById(R.id.book_list_container),
+                                            "Замовлення було скасовано").show()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
+                                showSnackBar(findViewById(R.id.book_list_container)).show()
+                            }
+                        })
+                    }.show()
                 }
             }
 
