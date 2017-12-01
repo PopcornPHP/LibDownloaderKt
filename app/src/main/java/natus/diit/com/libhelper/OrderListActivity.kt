@@ -28,7 +28,6 @@ class OrderListActivity : AppCompatActivity() {
     private var orderList: ListView? = null
 
     private var preferences: Preferences? = null
-    private var domain: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +38,6 @@ class OrderListActivity : AppCompatActivity() {
         preferences = Preferences(this.applicationContext)
 
         receivedCookie = preferences!!.savedReceivedCookie
-
-        domain = preferences!!.domain
 
         orderList = findViewById(R.id.orders_list) as ListView
         orderList!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
