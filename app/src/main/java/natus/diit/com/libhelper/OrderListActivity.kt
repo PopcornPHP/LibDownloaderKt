@@ -9,7 +9,10 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.TextView
 import natus.diit.com.libhelper.model.book.Book
 import natus.diit.com.libhelper.model.order.Order
 import natus.diit.com.libhelper.model.order.OrderJsonResponse
@@ -58,30 +61,28 @@ class OrderListActivity : AppCompatActivity() {
     }
 
     private fun cancelOrder(bookID: Int?) {
-        val call = apiService?.cancelOrder(receivedCookie, bookID)
+        val call = libBookApi?.cancelOrder(receivedCookie, bookID)
 
         call?.enqueue(object : Callback<OrderResponse> {
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
                 val resp = response.body().response
                 if (resp == null) {
-                    showSnackBar("Замовлення скасувати неможливо",
-                            findViewById(R.id.order_list_container))
+                    showSnackBar(findViewById(R.id.order_list_container),
+                            "Замовлення скасувати неможливо").show()
                 } else {
-                    showSnackBar("Замовлення було скасовано",
-                            findViewById(R.id.order_list_container))
+                    showSnackBar(findViewById(R.id.order_list_container),
+                            "Замовлення було скасовано").show()
                 }
             }
 
             override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
-                Toast.makeText(this@OrderListActivity, "Перевірте інтернет з'єднання",
-                        Toast.LENGTH_LONG)
-                        .show()
+                showSnackBar(findViewById(R.id.order_list_container)).show()
             }
         })
     }
 
     private fun fetchOrdersList() {
-        val call = apiService?.getAllOrders(receivedCookie)
+        val call = libBookApi?.getAllOrders(receivedCookie)
         call?.enqueue(object : Callback<OrderJsonResponse> {
             override fun onResponse(call: Call<OrderJsonResponse>,
                                     response: Response<OrderJsonResponse>) {
@@ -100,8 +101,8 @@ class OrderListActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<OrderJsonResponse>, t: Throwable) {
                 Log.e(LOG, "BookList Error + " + t.message)
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.book_list_container))
+                showSnackBar(findViewById(R.id.book_list_container)).show()
+
             }
         })
     }

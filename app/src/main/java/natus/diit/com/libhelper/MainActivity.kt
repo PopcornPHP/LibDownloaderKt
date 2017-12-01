@@ -117,31 +117,30 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun checkLogin() {
-        receivedCookie = preferences!!.savedReceivedCookie
-        isAuthorized = preferences!!.savedIsAuthorized
-        isRemembered = preferences!!.savedIsRemembered
+        receivedCookie = preferences.savedReceivedCookie
+        isAuthorized = preferences.savedIsAuthorized
+        isRemembered = preferences.savedIsRemembered
 
         if (!isAuthorized) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
-
+//
 //        val call = apiService?.checkUser(receivedCookie)
 //
 //        call?.enqueue(object : Callback<CheckUserResponse> {
 //            override fun onResponse(call: Call<CheckUserResponse>,
 //                                    response: Response<CheckUserResponse>) {
-//                val resp = response.body().isAuthorized
+//                val resp = response.body().flag
 //                Log.i(LOG, "responce = $resp")
-//                Log.i(LOG, "response.body = ${response.body()}")
 //
 //                if(resp == false){
 //                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
 //                    startActivity(intent)
 //                    finish()
 //                }else{
-//                    preferences?.savedIsAuthorized = true
+//                    preferences.savedIsAuthorized = true
 //                }
 //            }
 //
@@ -184,8 +183,8 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (!isBackPressed) {
             isBackPressed = true
-            showSnackBar("Натисніть ще раз для виходу",
-                    findViewById(R.id.search_container))
+            showSnackBar(findViewById(R.id.search_container), "Натисніть ще раз для виходу")
+                    .show()
 
             val handler = Handler()
             handler.postDelayed({ isBackPressed = false }, 2500)
@@ -193,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             if (!isRemembered) {
                 isAuthorized = false
-                preferences!!.savedIsAuthorized = false
+                preferences.savedIsAuthorized = false
             }
             super.onBackPressed()
             finish()
@@ -219,7 +218,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logOut() {
-        val call = apiService?.logOut(receivedCookie)
+        val call = libBookApi?.logOut(receivedCookie)
 
         call?.enqueue(object : Callback<LogOutResponse> {
             override fun onResponse(call: Call<LogOutResponse>, response: Response<LogOutResponse>) {
@@ -228,10 +227,10 @@ class MainActivity : AppCompatActivity() {
                 Log.i(LOG, "${response.body()}")
                 when (resp) {
                     true -> {
-                        preferences!!.savedIsAuthorized = false
-                        preferences!!.savedLogin = ""
-                        preferences!!.savedPassword = ""
-                        preferences!!.savedIsRemembered = false
+                        preferences.savedIsAuthorized = false
+                        preferences.savedLogin = ""
+                        preferences.savedPassword = ""
+                        preferences.savedIsRemembered = false
 
                         val intent = Intent(this@MainActivity, LoginActivity::class.java)
                         startActivity(intent)
@@ -248,8 +247,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LogOutResponse>, t: Throwable) {
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.search_container))
+                showSnackBar(findViewById(R.id.search_container)).show()
             }
         })
     }

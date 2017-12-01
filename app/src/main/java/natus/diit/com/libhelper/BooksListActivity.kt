@@ -95,7 +95,7 @@ class BooksListActivity : AppCompatActivity() {
     }
 
     private fun createOrder(bookId: Int, currentBranch: Int?) {
-        val call = apiService?.createOrder(
+        val call = libBookApi?.createOrder(
                 receivedCookie,
                 bookId,
                 currentBranch)
@@ -104,27 +104,23 @@ class BooksListActivity : AppCompatActivity() {
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
                 val resp = response.body().response
                 if (resp == null) {
-                    Toast.makeText(this@BooksListActivity, "Книгу замовити неможливо",
-                            Toast.LENGTH_LONG)
-                            .show()
+                    showSnackBar(findViewById(R.id.book_list_container),
+                            "Книгу замовити неможливо").show()
                 } else {
-                    Toast.makeText(this@BooksListActivity, "Книгу було замовлено",
-                            Toast.LENGTH_LONG)
-                            .show()
+                    showSnackBar(findViewById(R.id.book_list_container),
+                            "Книгу було замовлено").show()
                 }
             }
 
             override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
-                Toast.makeText(this@BooksListActivity, "Перевірте інтернет з'єднання",
-                        Toast.LENGTH_LONG)
-                        .show()
+                showSnackBar(findViewById(R.id.book_list_container)).show()
             }
         })
     }
 
     private fun fetchBooksList() {
 
-        val call = apiService?.getAllBooks(receivedCookie,
+        val call = libBookApi?.getAllBooks(receivedCookie,
                 searchByBookName, searchByAuthor,
                 searchByKeywords,
                 searchByYear,
@@ -146,8 +142,7 @@ class BooksListActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<JsonResponse>, t: Throwable) {
                 Log.e(LOG, "BookList Error + " + t.message)
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.book_list_container))
+                showSnackBar(findViewById(R.id.book_list_container)).show()
             }
         })
     }

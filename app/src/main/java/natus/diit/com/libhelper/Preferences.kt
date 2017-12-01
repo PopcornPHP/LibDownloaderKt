@@ -12,8 +12,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
-import natus.diit.com.libhelper.rest.ApiClient
 import natus.diit.com.libhelper.rest.ApiInterface
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -23,18 +24,18 @@ import javax.net.ssl.HttpsURLConnection
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
 const val LOG = "MyLog"
-val apiService = ApiClient.client?.create(ApiInterface::class.java)
-
-fun showSnackBar(text: String = "Перевірте інтернет з'єднання", view: View) {
-    Snackbar.make(view,
+internal var libBookApi: ApiInterface? = null
+fun showSnackBar(view: View, text: String = "Перевірте інтернет з'єднання"): Snackbar {
+    return Snackbar.make(view,
             text, Snackbar.LENGTH_LONG)
-            .show()
+//            .show()
+
 }
 
 fun setToolbar(activity: AppCompatActivity,
-               toolbarTitleRes:Int,
+               toolbarTitleRes: Int,
                arrowColorRes: Int = R.color.colorWhite
-               ){
+) {
 
     val myToolbar = activity.findViewById(R.id.my_toolbar) as Toolbar?
     myToolbar?.title = activity.getString(toolbarTitleRes)
@@ -53,6 +54,19 @@ class Preferences : Application {
     val domain = "https://library.diit.edu.ua"
     private lateinit var prefs: SharedPreferences
     private val sharedPrefsFile = "MyPreferences"
+    private val BASE_URL = "https://library.diit.edu.ua/api/"
+    private lateinit var retrofit: Retrofit
+
+
+    override fun onCreate() {
+        super.onCreate()
+
+        retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        libBookApi = retrofit.create(ApiInterface::class.java)
+    }
 
     var savedLogin: String = ""
         set(value) {
@@ -225,5 +239,10 @@ class Preferences : Application {
             buffer.append(line)
         }
         return buffer.toString()
+    }
+
+
+    companion object {
+
     }
 }

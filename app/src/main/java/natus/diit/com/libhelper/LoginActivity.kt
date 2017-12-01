@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun logIn() {
-        val call = apiService?.signIn(cardNumber, password, isRemembered)
+        val call = libBookApi?.signIn(cardNumber, password, isRemembered)
         call?.enqueue(object : Callback<CheckUserLogIn> {
             override fun onResponse(call: Call<CheckUserLogIn>,
                                     response: Response<CheckUserLogIn>) {
@@ -132,8 +132,7 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<CheckUserLogIn>, t: Throwable) {
                 Log.e(LOG, "LoginActivity Error + " + t.message)
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.passw_login_form))
+                showSnackBar(findViewById(R.id.passw_login_form)).show()
             }
         })
     }

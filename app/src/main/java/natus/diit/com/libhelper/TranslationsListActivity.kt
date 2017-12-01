@@ -4,7 +4,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.widget.*
@@ -72,8 +71,7 @@ class TranslationsListActivity : AppCompatActivity() {
                 Log.i(LOG, "JSON " + resultJson)
 
             } catch (e: Exception) {
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.translations_list_container))
+                showSnackBar(findViewById(R.id.translations_list_container)).show()
             }
 
             return resultJson
@@ -106,8 +104,7 @@ class TranslationsListActivity : AppCompatActivity() {
                             names)
                     lwDictionaryList!!.adapter = adapter
 
-                    lwDictionaryList!!.onItemClickListener = AdapterView.OnItemClickListener {
-                        adapterView, view, pos, id ->
+                    lwDictionaryList!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, pos, id ->
                         try {
                             val tmpJSON = responseData.getJSONArray(names[pos])
                             val translationResult = StringBuilder()
@@ -135,8 +132,8 @@ class TranslationsListActivity : AppCompatActivity() {
                 }
 
             } catch (e: JSONException) {
-                showSnackBar("Перевірте інтернет з'єднання",
-                        findViewById(R.id.translations_list_container))
+                showSnackBar(findViewById(R.id.translations_list_container)).show()
+
             }
 
         }
