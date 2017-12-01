@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import natus.diit.com.libhelper.model.user.CheckUserResponse
 import natus.diit.com.libhelper.model.user.LogOutResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,11 +55,12 @@ class MainActivity : AppCompatActivity() {
         preferences = Preferences(this)
 
         requestWriteDataPermission()
-        checkLogin()
+
 
         setContentView(R.layout.activity_main)
 
         setToolbar()
+        checkLogin()
 
         etSearchByNumber = findViewById(R.id.search_number_field) as EditText
         etSearchByAuthor = findViewById(R.id.searchAuthor) as EditText
@@ -118,39 +120,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkLogin() {
         receivedCookie = preferences.savedReceivedCookie
-        isAuthorized = preferences.savedIsAuthorized
         isRemembered = preferences.savedIsRemembered
 
-        if (!isAuthorized) {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-//
-//        val call = apiService?.checkUser(receivedCookie)
-//
-//        call?.enqueue(object : Callback<CheckUserResponse> {
-//            override fun onResponse(call: Call<CheckUserResponse>,
-//                                    response: Response<CheckUserResponse>) {
-//                val resp = response.body().flag
-//                Log.i(LOG, "responce = $resp")
-//
-//                if(resp == false){
-//                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                }else{
-//                    preferences.savedIsAuthorized = true
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<CheckUserResponse>, t: Throwable) {
-//                Toast.makeText(this@MainActivity, "Перевірте інтернет з'єднання",
-//                        Toast.LENGTH_LONG)
-//                        .show()
-//                Log.i(LOG, "${t.message}")
-//            }
-//        })
+        val call = libBookApi?.checkUser(receivedCookie)
+
+        call?.enqueue(object : Callback<CheckUserResponse> {
+            override fun onResponse(call: Call<CheckUserResponse>,
+                                    response: Response<CheckUserResponse>) {
+                val resp = response.body().flag
+                Log.i(LOG, "response = $resp")
+
+                if (resp == false) {
+                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    isAuthorized = true
+                    preferences.savedIsAuthorized = true
+                }
+            }
+
+            override fun onFailure(call: Call<CheckUserResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Перевірте інтернет з'єднання",
+                        Toast.LENGTH_LONG)
+                        .show()
+                Log.i(LOG, "${t.message}")
+            }
+        })
 
     }
 
@@ -178,37 +174,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onBackPressed() {
-        if (!isBackPressed) {
-            isBackPressed = true
-            showSnackBar(findViewById(R.id.search_container), "Натисніть ще раз для виходу")
-                    .show()
-
-            val handler = Handler()
-            handler.postDelayed({ isBackPressed = false }, 2500)
-
-        } else {
-            if (!isRemembered) {
-                isAuthorized = false
-                preferences.savedIsAuthorized = false
-            }
-            super.onBackPressed()
-            finish()
-        }
-
-    }
-
-    companion object {
-        internal val SEARCH_AUTHOR = "search_author"
-        internal val SEARCH_NUMBER = "search_number"
-        internal val SEARCH_KEYWORDS = "search_keywords"
-        internal val SEARCH_YEAR = "search_year"
-        internal val SEARCH_BOOK_NAME = "search_book_name"
-
-        private val PERMISSION_REQUEST_CODE = 10
-        private var isBackPressed = false
     }
 
     private fun setToolbar() {
@@ -252,5 +217,58 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onBackPressed() {
+        if (!isBackPressed) {
+            isBackPressed = true
+            showSnackBar(findViewById(R.id.search_container), "Натисніть ще раз для виходу")
+                    .show()
 
+            val handler = Handler()
+            handler.postDelayed({ isBackPressed = false }, 2500)
+
+        } else {
+            if (!isRemembered) {
+                val call = libBookApi?.logOut(receivedCookie)
+
+                call?.enqueue(object : Callback<LogOutResponse> {
+                    override fun onResponse(call: Call<LogOutResponse>, response: Response<LogOutResponse>) {
+                        val resp = response.body().response
+                        Log.i(LOG, "$resp")
+                        Log.i(LOG, "${response.body()}")
+                        when (resp) {
+                            true -> {
+                                preferences.savedIsAuthorized = false
+                                preferences.savedLogin = ""
+                                preferences.savedPassword = ""
+                                preferences.savedIsRemembered = false
+
+                                finish()
+                            }
+                            else -> {
+                                Toast.makeText(this@MainActivity, "Не вдалося вийти з акаунту",
+                                        Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<LogOutResponse>, t: Throwable) {
+                        showSnackBar(findViewById(R.id.search_container)).show()
+                    }
+                })
+            }
+            super.onBackPressed()
+        }
+
+    }
+
+    companion object {
+        internal val SEARCH_AUTHOR = "search_author"
+        internal val SEARCH_NUMBER = "search_number"
+        internal val SEARCH_KEYWORDS = "search_keywords"
+        internal val SEARCH_YEAR = "search_year"
+        internal val SEARCH_BOOK_NAME = "search_book_name"
+
+        private val PERMISSION_REQUEST_CODE = 10
+        private var isBackPressed = false
+    }
 }
