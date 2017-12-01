@@ -28,8 +28,6 @@ internal var libBookApi: ApiInterface? = null
 fun showSnackBar(view: View, text: String = "Перевірте інтернет з'єднання"): Snackbar {
     return Snackbar.make(view,
             text, Snackbar.LENGTH_LONG)
-//            .show()
-
 }
 
 fun setToolbar(activity: AppCompatActivity,
