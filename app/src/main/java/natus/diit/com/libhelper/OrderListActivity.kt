@@ -143,7 +143,7 @@ class OrderListActivity : AppCompatActivity() {
 
             val category = currentBook?.categoryId
             val linkName = currentBook?.linkName
-            val title = Book.getShortBookName(currentBook?.name)
+            val title = Book.getShortBookName(currentBook?.name!!)
 
             if (category == 1 || category == 3) {
                 titleBookTv.text = linkName
@@ -163,10 +163,10 @@ class OrderListActivity : AppCompatActivity() {
                 else -> "невідомий"
             }
 
-            titleBookTv.text = currentBook?.name
+            //titleBookTv.text = currentBook.name
 
             orderStatusTv = retView.findViewById(R.id.orderList_item_tv_orderStatus) as TextView
-            orderStatusTv.text = "Статус замовлення : $readableStatus"
+            orderStatusTv.text = readableStatus
 
             setOrderStatusColor(readableStatus)
 

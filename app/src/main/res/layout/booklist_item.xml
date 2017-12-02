@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/tv_list_grey"
     android:layout_height="match_parent">
 
     <TextView
@@ -12,7 +13,7 @@
         android:paddingLeft="5dp"
         android:paddingTop="10dp"
         android:paddingRight="5dp"
-        android:layout_marginBottom="1dp"
+        android:textSize="15sp"
         android:text="">
     </TextView>
 
@@ -26,6 +27,7 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:textStyle="italic"
+        android:textSize="13sp"
         android:text="" />
 
 </LinearLayout>

@@ -192,9 +192,12 @@ class BooksListActivity : AppCompatActivity() {
             }
 
             val authorsBookTv = retView.findViewById(R.id.booklist_item_tv_bookAuthors) as TextView
-            authorsBookTv.text = if (lB.authors == null)
-                "Автори : Без авторів"
-            else "Автори: ${lB.authors}"
+
+            if(lB.getAuthorsNames().isBlank()){
+                authorsBookTv.text = "Без Авторів"
+            }else {
+                authorsBookTv.text = lB.getAuthorsNames()
+            }
 
             return retView
         }
