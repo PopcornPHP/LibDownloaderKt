@@ -29,10 +29,20 @@ class Book(@field:SerializedName("id")
     @SerializedName("rel_author")
     var authors: List<BookAuthor>? = null
 
+    fun getAuthorsNames(): StringBuilder {
+
+        val sBuilder = StringBuilder()
+        for (author in authors!!) {
+            sBuilder.append(author)
+        }
+        return sBuilder
+
+    }
+
     var currentBranch: Int? = 0
         get() {
 
-            if(relBranch == null)
+            if (relBranch == null)
                 return 0
 
             for (branch in relBranch!!) {
@@ -43,8 +53,8 @@ class Book(@field:SerializedName("id")
         }
 
     companion object {
-        fun getShortBookName(bookName: String?): String? {
-            var bn: String? = bookName ?: return ""
+        fun getShortBookName(bookName: String): String? {
+            var bn: String? = ""
 
             (0 until bookName.length)
                     .takeWhile { bookName[it] != '/' }
