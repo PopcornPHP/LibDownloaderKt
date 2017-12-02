@@ -10,5 +10,5 @@ class BookAuthor(
 ) {
         var pivot: Pivot? = null
 
-        override fun toString(): String = this.name!!
+        override fun toString(): String = this.name ?: ""
 }
