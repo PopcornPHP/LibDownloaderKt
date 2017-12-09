@@ -97,9 +97,8 @@ class OrderListActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<OrderJsonResponse>, t: Throwable) {
-                Log.e(LOG, "BookList Error + " + t.message)
-                showSnackBar(findViewById(R.id.book_list_container)).show()
-
+                Log.e(LOG, "OrderList Error + " + t.message)
+                showSnackBar(findViewById(R.id.order_list_container)).show()
             }
         })
     }
