@@ -1,6 +1,8 @@
 package natus.diit.com.libhelper
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -40,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setToolbar()
         setContentView(R.layout.activity_login)
-
+        requestWriteDataPermission()
         preferences = Preferences(this)
 
         signInButton = findViewById(R.id.sign_in_button) as Button
@@ -141,6 +143,17 @@ class LoginActivity : AppCompatActivity() {
         val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
         myToolbar?.title = getString(R.string.title_activity_authorization)
         setSupportActionBar(myToolbar)
+    }
+
+    private fun requestWriteDataPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    companion object {
+        private val PERMISSION_REQUEST_CODE = 10
     }
 
 }

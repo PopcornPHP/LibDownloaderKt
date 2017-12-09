@@ -1,9 +1,7 @@
 package natus.diit.com.libhelper
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
@@ -53,9 +51,6 @@ class MainActivity : AppCompatActivity() {
         //suspendApp()
 
         preferences = Preferences(this)
-
-        requestWriteDataPermission()
-
 
         setContentView(R.layout.activity_main)
 
@@ -110,12 +105,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun requestWriteDataPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    PERMISSION_REQUEST_CODE)
-        }
-    }
 
 
     private fun checkLogin() {
@@ -267,8 +256,6 @@ class MainActivity : AppCompatActivity() {
         internal val SEARCH_KEYWORDS = "search_keywords"
         internal val SEARCH_YEAR = "search_year"
         internal val SEARCH_BOOK_NAME = "search_book_name"
-
-        private val PERMISSION_REQUEST_CODE = 10
         private var isBackPressed = false
     }
 }
