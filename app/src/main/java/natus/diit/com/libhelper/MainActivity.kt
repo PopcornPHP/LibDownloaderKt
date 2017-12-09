@@ -130,9 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<CheckUserResponse>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Перевірте інтернет з'єднання",
-                        Toast.LENGTH_LONG)
-                        .show()
+                showSnackBar(findViewById(R.id.search_container)).show()
                 Log.i(LOG, "${t.message}")
             }
         })
