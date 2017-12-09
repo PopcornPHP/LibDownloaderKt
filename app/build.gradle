@@ -8,8 +8,8 @@ android {
         applicationId "natus.diit.com.libhelper"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 9
-        versionName "3.0s"
+        versionCode 10
+        versionName "3.1s"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
