@@ -156,6 +156,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, OrderListActivity::class.java)
                 startActivity(intent)
             }
+        //Downloads
+            R.id.main_menu_downloads -> {
+                val intent = Intent(this, FileListActivity::class.java)
+                startActivity(intent)
+            }
         //Exit
             R.id.main_menu_exit -> logOut()
         }
