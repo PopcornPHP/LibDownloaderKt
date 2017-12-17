@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
@@ -16,6 +17,7 @@ import natus.diit.com.libhelper.rest.ApiInterface
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -25,6 +27,9 @@ import javax.net.ssl.HttpsURLConnection
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
 const val LOG = "MyLog"
+val booksFolder = File(Environment.getExternalStorageDirectory()
+.toString() + File.separator + "DNURTBooks")
+
 internal var libBookApi: ApiInterface? = null
 fun showSnackBar(view: View, text: String = "Перевірте інтернет з'єднання"): Snackbar {
     return Snackbar.make(view,
