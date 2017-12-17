@@ -1,34 +1,30 @@
 package natus.diit.com.libhelper
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import natus.diit.com.libhelper.adapter.DividerItemDecoration
 import natus.diit.com.libhelper.adapter.FilesAdapter
 import java.io.File
+import java.io.FileInputStream
+import java.net.URLConnection
 import java.util.*
 
-class FileListActivity : AppCompatActivity(),
-        FilesAdapter.MessageAdapterListener {
-    override fun onMessageRowClicked(position: Int) {
-        Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show()
-    }
 
-    override fun onRowLongClicked(position: Int) {
-        Toast.makeText(this, "World", Toast.LENGTH_LONG).show()
-        enableActionMode(position)
-    }
+class FilesListActivity : AppCompatActivity(),
+        FilesAdapter.FilesAdapterListener {
 
-    private val messages = ArrayList<File>()
+    private val files = ArrayList<File>()
     private lateinit var recyclerView: RecyclerView
     private var mAdapter: FilesAdapter? = null
     private var actionModeCallback: ActionModeCallback? = null
@@ -37,12 +33,11 @@ class FileListActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_list)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar2)
-        setSupportActionBar(toolbar)
+        setToolbar(this, R.string.title_activity_files_list, toolbarResId = R.id.files_toolbar)
 
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(R.id.recycler_view) as RecyclerView
 
-        mAdapter = FilesAdapter(this, messages, this)
+        mAdapter = FilesAdapter(this, files, this)
 
         val mLayoutManager = LinearLayoutManager(applicationContext)
         recyclerView.layoutManager = mLayoutManager
@@ -52,17 +47,14 @@ class FileListActivity : AppCompatActivity(),
 
         actionModeCallback = ActionModeCallback()
 
-        getInbox()
+        fetchDownloadedBooks()
 
     }
 
-    private fun getInbox() {
-        val folder = File(Environment.getExternalStorageDirectory()
-                .toString() + File.separator + "DNURTBooks")
+    private fun fetchDownloadedBooks() {
+        val folder = booksFolder
         Log.i(LOG, "${folder.listFiles()}")
-        for (file in folder.listFiles()) {
-            messages.add(file)
-        }
+        files += folder.listFiles()
 
         mAdapter!!.notifyDataSetChanged()
     }
@@ -79,26 +71,33 @@ class FileListActivity : AppCompatActivity(),
         }
 
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            when (item.itemId) {
+            return when (item.itemId) {
                 R.id.action_delete -> {
-                    // delete all the selected messages
-                    //deleteMessages()
+                    // delete all the selected files
+                    deleteFiles()
                     mode.finish()
-                    return true
+                    true
                 }
 
-                else -> return false
+                else -> false
             }
+        }
+
+        private fun deleteFiles() {
+            val selectedItemPositions = mAdapter!!.getSelectedItems()
+            for (i in selectedItemPositions.size - 1 downTo 0) {
+                val file: File = mAdapter!!.getFile(selectedItemPositions[i])
+                mAdapter!!.removeData(selectedItemPositions[i])
+                val deleted = file.delete()
+                Log.i(LOG, "$deleted")
+            }
+            mAdapter!!.notifyDataSetChanged()
         }
 
         override fun onDestroyActionMode(mode: ActionMode) {
             mAdapter!!.clearSelections()
-            //swipeRefreshLayout!!.isEnabled = true
             actionMode = null
-//            recyclerView.post {
-//               // mAdapter!!.resetAnimationIndex()
-                mAdapter!!.notifyDataSetChanged();
-//            }
+            mAdapter!!.notifyDataSetChanged();
         }
     }
 
@@ -119,5 +118,33 @@ class FileListActivity : AppCompatActivity(),
             actionMode!!.title = count.toString()
             actionMode!!.invalidate()
         }
+    }
+
+    override fun onMessageRowClicked(position: Int) {
+        if (mAdapter!!.selectedItemCount > 0) {
+            enableActionMode(position)
+        } else {
+            val file = mAdapter!!.getFile(position)
+            val myIntent = Intent(Intent.ACTION_VIEW)
+            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                var mime = URLConnection.guessContentTypeFromStream(FileInputStream(file))
+                if (mime == null) mime = URLConnection.guessContentTypeFromName(file.getName())
+                myIntent.setDataAndType(Uri.fromFile(file), mime)
+                startActivity(myIntent)
+            }else{
+                myIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val uri = FileProvider.getUriForFile(this,
+                        applicationContext.
+                                packageName + PROVIDERS_PATH, file)
+                myIntent.data = uri
+                startActivity(myIntent)
+            }
+        }
+    }
+
+    override fun onRowLongClicked(position: Int) {
+        enableActionMode(position)
     }
 }

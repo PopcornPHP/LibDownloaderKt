@@ -7,9 +7,7 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import natus.diit.com.libhelper.R
 import java.io.File
@@ -17,28 +15,18 @@ import java.util.*
 
 class FilesAdapter(private val mContext: Context,
                    private val files: MutableList<File>,
-                   private val listener: MessageAdapterListener)
+                   private val listener: FilesAdapterListener)
     : RecyclerView.Adapter<FilesAdapter.MyViewHolder>() {
-    internal val selectedItems: SparseBooleanArray = SparseBooleanArray()
-
-    // array used to perform multiple animation at once
-    private val animationItemsIndex: SparseBooleanArray = SparseBooleanArray()
-    private var reverseAllAnimations = false
+    private val selectedItems: SparseBooleanArray = SparseBooleanArray()
 
     val selectedItemCount: Int
         get() = selectedItems.size()
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnLongClickListener {
-        var from: TextView
-        var imgProfile: ImageView
-        var messageContainer: LinearLayout
-        var iconFront: RelativeLayout
+        var tvBookName: TextView = view.findViewById(R.id.files_tv_bookname) as TextView
+        var filesContainer = view.findViewById(R.id.files_container) as LinearLayout
 
         init {
-            from = view.findViewById<TextView>(R.id.from) as TextView
-            iconFront = view.findViewById<RelativeLayout>(R.id.icon_front) as RelativeLayout
-            imgProfile = view.findViewById<ImageView>(R.id.icon_profile) as ImageView
-            messageContainer = view.findViewById<LinearLayout>(R.id.message_container) as LinearLayout
             view.setOnLongClickListener(this)
         }
 
@@ -49,7 +37,6 @@ class FilesAdapter(private val mContext: Context,
         }
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.files_list_row, parent, false)
@@ -58,32 +45,26 @@ class FilesAdapter(private val mContext: Context,
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val message = files[position]
-
+        val file = files[position]
         // displaying text view data
-        holder.from.text = "Методичка ${message.name}"
+        holder.tvBookName.text = String
+                .format(mContext.resources.getString(R.string.files_manual_number),
+                        file.nameWithoutExtension)
 
-        // apply click events
+        holder.itemView.isActivated = selectedItems.get(position, false)
         applyClickEvents(holder, position)
     }
 
     private fun applyClickEvents(holder: MyViewHolder, position: Int) {
 
-        holder.messageContainer.setOnClickListener { listener.onMessageRowClicked(position) }
+        holder.filesContainer.setOnClickListener { listener.onMessageRowClicked(position) }
 
-        holder.messageContainer.setOnLongClickListener { view ->
+        holder.filesContainer.setOnLongClickListener { view ->
             listener.onRowLongClicked(position)
             view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             true
         }
     }
-
-//
-//    override fun getItemId(position: Int): Long {
-//        return files[position].id.toLong()
-//    }
-
-
 
     override fun getItemCount(): Int {
         return files.size
@@ -93,16 +74,13 @@ class FilesAdapter(private val mContext: Context,
         currentSelectedIndex = pos
         if (selectedItems.get(pos, false)) {
             selectedItems.delete(pos)
-            animationItemsIndex.delete(pos)
         } else {
             selectedItems.put(pos, true)
-            animationItemsIndex.put(pos, true)
         }
         notifyItemChanged(pos)
     }
 
     fun clearSelections() {
-        reverseAllAnimations = true
         selectedItems.clear()
         notifyDataSetChanged()
     }
@@ -124,10 +102,14 @@ class FilesAdapter(private val mContext: Context,
         currentSelectedIndex = -1
     }
 
-    interface MessageAdapterListener {
+    interface FilesAdapterListener {
         fun onMessageRowClicked(position: Int)
 
         fun onRowLongClicked(position: Int)
+    }
+
+    fun getFile(position: Int): File {
+        return files[position]
     }
 
     companion object {
