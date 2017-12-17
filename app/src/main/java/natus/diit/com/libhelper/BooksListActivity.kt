@@ -4,7 +4,6 @@ import android.app.ProgressDialog
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Environment
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -60,8 +59,7 @@ class BooksListActivity : AppCompatActivity() {
             if (fileSize > 0) {
                 builder.setPositiveButton("Завантажити книгу") { dialog, which ->
                     val downloadLink = lb.link
-                    val folder = File(Environment.getExternalStorageDirectory()
-                            .toString() + File.separator + "DNURTBooks")
+                    val folder = booksFolder
                     Log.i(LOG, "File path = " + folder.absolutePath)
                     if (!folder.exists()) {
                         folder.mkdir()
