@@ -6,7 +6,7 @@
 
     <item android:id="@+id/main_menu_dictionary"
         android:icon="@drawable/ic_translate_white_24dp"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:title="@string/main_menu_item_dictionary_text" />
 
     <item android:id="@+id/main_menu_orders"
@@ -14,8 +14,13 @@
         app:showAsAction="ifRoom"
         android:title="@string/main_menu_item_orders_text" />
 
+    <item android:id="@+id/main_menu_downloads"
+        android:icon="@drawable/ic_file_download_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/main_menu_item_downloads_text" />
+
     <item android:id="@+id/main_menu_exit"
         android:title="@string/main_menu_item_exit_text"
         android:icon="@drawable/ic_exit_to_app_white_24dp"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 </menu>
