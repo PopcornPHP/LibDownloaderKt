@@ -41,6 +41,7 @@
     <string name="title_activity_dictionary">Словник</string>
     <string name="title_activity_translations">Переклади</string>
     <string name="title_activity_authorization">Авторизація</string>
+    <string name="title_activity_files_list">Завантаження</string>
 
     <string name="tv_translations_results">Результат перекладу</string>
     <string name="main_btn_find">Знайти</string>
@@ -51,5 +52,8 @@
     <string name="main_menu_item_dictionary_text">Словник</string>
     <string name="main_menu_item_orders_text">Замовлення</string>
     <string name="main_menu_item_exit_text">Вийти</string>
+
+    <string name="action_delete">Delete</string>
+    <string name="main_menu_item_downloads_text">Завантаження</string>
 
 </resources>
