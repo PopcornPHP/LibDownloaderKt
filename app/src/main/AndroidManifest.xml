@@ -84,7 +84,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".FileListActivity"
+        <activity android:name=".FilesListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_files_list"

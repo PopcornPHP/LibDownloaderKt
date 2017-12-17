@@ -22,7 +22,7 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
 
     private var signInButton: Button? = null
-    private val registerButton: Button? = null
+    private lateinit var registerButton: Button
     private var loginCheckBox: CheckBox? = null
 
     private var etLibCardNumberText: EditText? = null
@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
         preferences = Preferences(this)
 
         signInButton = findViewById(R.id.sign_in_button) as Button
-        //registerButton = (Button) findViewById(R.id.registerButton);
+        registerButton = findViewById(R.id.registerButton) as Button
 
         etLibCardNumberText = findViewById(R.id.libCardText) as EditText
         etPassword = findViewById(R.id.passwordText) as EditText
@@ -88,72 +88,70 @@ class LoginActivity : AppCompatActivity() {
             false
         }
 
-        //        registerButton.setOnClickListener(new View.OnClickListener() {
-        //            @Override
-        //            public void onClick(View view) {
-        //                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-        //                startActivity(intent);
-        //            }
-        //        });
-    }
-
-    private fun logIn() {
-        val call = libBookApi?.signIn(cardNumber, password, isRemembered)
-        call?.enqueue(object : Callback<CheckUserLogIn> {
-            override fun onResponse(call: Call<CheckUserLogIn>,
-                                    response: Response<CheckUserLogIn>) {
-                val headers = response.headers()
-                preferences.savedReceivedCookie = headers["Set-Cookie"]
-
-                val user = response.body().user
-
-                if (user != null) {
-                    isAuthorized = true
-                } else {
-                    authorizationError = when {
-                        password == "" -> "Ви не ввели пароль"
-                        cardNumber == "" -> "Ви не ввели читацький номер"
-                        else -> "Ви вказали невірні дані"
-                    }
-                    isAuthorized = false
-                }
-
-                preferences.savedIsAuthorized = isAuthorized
-
-                if (isAuthorized) {
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    val mySnackbar = Snackbar.make(findViewById(R.id.passw_login_form),
-                            authorizationError, Snackbar.LENGTH_LONG)
-
-                    mySnackbar.show()
-                }
-            }
-
-            override fun onFailure(call: Call<CheckUserLogIn>, t: Throwable) {
-                Log.e(LOG, "LoginActivity Error + " + t.message)
-                showSnackBar(findViewById(R.id.passw_login_form)).show()
-            }
-        })
-    }
-
-    private fun setToolbar() {
-        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
-        myToolbar?.title = getString(R.string.title_activity_authorization)
-        setSupportActionBar(myToolbar)
-    }
-
-    private fun requestWriteDataPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    PERMISSION_REQUEST_CODE)
+        registerButton.setOnClickListener {
+            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    companion object {
-        private val PERMISSION_REQUEST_CODE = 10
+
+private fun logIn() {
+    val call = libBookApi?.signIn(cardNumber, password, isRemembered)
+    call?.enqueue(object : Callback<CheckUserLogIn> {
+        override fun onResponse(call: Call<CheckUserLogIn>,
+                                response: Response<CheckUserLogIn>) {
+            val headers = response.headers()
+            preferences.savedReceivedCookie = headers["Set-Cookie"]
+
+            val user = response.body().user
+
+            if (user != null) {
+                isAuthorized = true
+            } else {
+                authorizationError = when {
+                    password == "" -> "Ви не ввели пароль"
+                    cardNumber == "" -> "Ви не ввели читацький номер"
+                    else -> "Ви вказали невірні дані"
+                }
+                isAuthorized = false
+            }
+
+            preferences.savedIsAuthorized = isAuthorized
+
+            if (isAuthorized) {
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val mySnackbar = Snackbar.make(findViewById(R.id.passw_login_form),
+                        authorizationError, Snackbar.LENGTH_LONG)
+
+                mySnackbar.show()
+            }
+        }
+
+        override fun onFailure(call: Call<CheckUserLogIn>, t: Throwable) {
+            Log.e(LOG, "LoginActivity Error + " + t.message)
+            showSnackBar(findViewById(R.id.passw_login_form)).show()
+        }
+    })
+}
+
+private fun setToolbar() {
+    val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+    myToolbar?.title = getString(R.string.title_activity_authorization)
+    setSupportActionBar(myToolbar)
+}
+
+private fun requestWriteDataPermission() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_CODE)
     }
+}
+
+companion object {
+    private val PERMISSION_REQUEST_CODE = 10
+}
 
 }
