@@ -60,8 +60,8 @@ class BooksListActivity : AppCompatActivity() {
             if (fileSize > 0) {
                 builder.setPositiveButton("Завантажити книгу") { dialog, which ->
                     val downloadLink = lb.link
-                    val folder = File(Environment.getExternalStorageDirectory().toString() +
-                            File.separator + "DNURTBooks")
+                    val folder = File(Environment.getExternalStorageDirectory()
+                            .toString() + File.separator + "DNURTBooks")
                     Log.i(LOG, "File path = " + folder.absolutePath)
                     if (!folder.exists()) {
                         folder.mkdir()
@@ -315,7 +315,7 @@ class BooksListActivity : AppCompatActivity() {
     }
 
     private fun hideProgressBar() {
-        val progressBar = findViewById(R.id.book_list_progress) as ProgressBar?
+        val progressBar = findViewById(R.id.book_list_progress)
         progressBar?.visibility = View.INVISIBLE
     }
 
