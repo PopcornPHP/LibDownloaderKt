@@ -27,6 +27,7 @@ import javax.net.ssl.HttpsURLConnection
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
 const val LOG = "MyLog"
+const val PROVIDERS_PATH = ".natus.diit.com.libhelper.provider"
 val booksFolder = File(Environment.getExternalStorageDirectory()
 .toString() + File.separator + "DNURTBooks")
 
