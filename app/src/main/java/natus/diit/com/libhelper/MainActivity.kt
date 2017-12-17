@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
             }
         //Downloads
             R.id.main_menu_downloads -> {
-                val intent = Intent(this, FileListActivity::class.java)
+                val intent = Intent(this, FilesListActivity::class.java)
                 startActivity(intent)
             }
         //Exit
