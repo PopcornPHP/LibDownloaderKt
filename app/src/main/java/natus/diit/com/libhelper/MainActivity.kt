@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        createBooksFolder()
         setToolbar()
         checkLogin()
 
@@ -91,6 +92,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun createBooksFolder() {
+        if (!booksFolder.exists()) {
+            booksFolder.mkdir()
+        }
+    }
+
     fun suspendApp() {
         val builder: AlertDialog.Builder
         builder = AlertDialog.Builder(this@MainActivity)
@@ -104,7 +111,6 @@ class MainActivity : AppCompatActivity() {
                 .show()
 
     }
-
 
 
     private fun checkLogin() {
