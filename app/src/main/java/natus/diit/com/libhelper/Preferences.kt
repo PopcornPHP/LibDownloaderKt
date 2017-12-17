@@ -21,6 +21,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
+
 //Auxiliary class which works with SharesPreferences
 //and contains some global variables
 const val LOG = "MyLog"
@@ -32,14 +33,15 @@ fun showSnackBar(view: View, text: String = "Перевірте інтернет
 
 fun setToolbar(activity: AppCompatActivity,
                toolbarTitleRes: Int,
-               arrowColorRes: Int = R.color.colorWhite
+               arrowColorRes: Int = R.color.colorWhite,
+               toolbarResId: Int = R.id.my_toolbar
 ) {
 
-    val myToolbar = activity.findViewById(R.id.my_toolbar) as Toolbar?
+    val myToolbar = activity.findViewById(toolbarResId) as Toolbar?
     myToolbar?.title = activity.getString(toolbarTitleRes)
     activity.setSupportActionBar(myToolbar)
 
-    val upArrow: Drawable = ContextCompat.getDrawable(activity, R.drawable.abc_ic_ab_back_material)
+    val upArrow: Drawable = ContextCompat.getDrawable(activity, R.drawable.ic_arrow_back_white_24dp)
     upArrow.setColorFilter(activity.resources.getColor(arrowColorRes), PorterDuff.Mode.SRC_ATOP)
     activity.supportActionBar?.setHomeAsUpIndicator(upArrow)
 
