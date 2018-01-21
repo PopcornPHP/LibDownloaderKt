@@ -1,7 +1,9 @@
 package natus.diit.com.libhelper.model.book
 
 import com.google.gson.annotations.SerializedName
-
+/**
+ * Encapsulates branch
+ */
 class Branch(
         @field:SerializedName("id")
         var id: Int? = null,

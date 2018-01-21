@@ -4,7 +4,9 @@ import android.support.v7.app.AlertDialog
 import android.text.Html
 import com.google.gson.annotations.SerializedName
 import natus.diit.com.libhelper.model.book.Book
-
+/**
+ * Encapsulates order
+ */
 class Order(@field:SerializedName("id")
             var id: Int,
             @field:SerializedName("name")
@@ -18,6 +20,12 @@ class Order(@field:SerializedName("id")
     var relBook:Book? = null
 
     companion object {
+
+        /**
+         * Shows information dialog
+         * @param order order
+         * @param builder builder of AlertDialog
+         */
         fun showOrderInfo(order: Order?, builder: AlertDialog.Builder) {
             val bookName = order?.relBook?.name
             val delPoint = order?.relBook?.relBranch?.get(0)

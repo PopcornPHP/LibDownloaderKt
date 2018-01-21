@@ -13,6 +13,10 @@ import natus.diit.com.libhelper.R
 import java.io.File
 import java.util.*
 
+/**
+ * Adapter class for doanloaded manuals
+ */
+
 class FilesAdapter(private val mContext: Context,
                    private val files: MutableList<File>,
                    private val listener: FilesAdapterListener)

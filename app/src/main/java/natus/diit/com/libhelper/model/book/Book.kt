@@ -5,6 +5,9 @@ import android.text.Html
 import com.google.gson.annotations.SerializedName
 import java.text.DecimalFormat
 
+/**
+ * Encapsulates book
+ */
 class Book(@field:SerializedName("id")
            var id: Int,
            @field:SerializedName("category_id")
@@ -53,6 +56,11 @@ class Book(@field:SerializedName("id")
         }
 
     companion object {
+        /**
+         * Returns shorten book name
+         * @param bookName Original book name
+         * @return shorten book name
+         */
         fun getShortBookName(bookName: String): String? {
             var bn: String? = ""
 
@@ -62,6 +70,11 @@ class Book(@field:SerializedName("id")
             return bn
         }
 
+        /**
+         * Shows information dialog
+         * @param lb book
+         * @param builder builder of AlertDialog
+         */
         fun showBookInfo(lb: Book?, builder: AlertDialog.Builder) {
 
             val formattedDouble = DecimalFormat("#0.00")

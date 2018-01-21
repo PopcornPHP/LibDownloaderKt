@@ -1,7 +1,9 @@
 package natus.diit.com.libhelper.model.user
 
 import com.google.gson.annotations.SerializedName
-
+/**
+ * Encapsulates user
+ */
 class User(
         @field:SerializedName("id")
         var id:Int? = null,

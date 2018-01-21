@@ -1,7 +1,9 @@
 package natus.diit.com.libhelper.model.book
 
 import com.google.gson.annotations.SerializedName
-
+/**
+ * Encapsulates pivot
+ */
 class Pivot(
         @field:SerializedName("book_id")
         var bookId: Int? = null,

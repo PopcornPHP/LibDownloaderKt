@@ -8,10 +8,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 
-/**
- * Created by Ravi Tamada on 21/02/17.
- * www.androidhive.info
- */
 class DividerItemDecoration(context: Context, orientation: Int) : RecyclerView.ItemDecoration() {
 
     private val mDivider: Drawable?

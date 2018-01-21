@@ -2,6 +2,9 @@ package natus.diit.com.libhelper.model.book
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Encapsulates book`s author
+ */
 class BookAuthor(
         @field:SerializedName("id")
         var id: Int? = null,
