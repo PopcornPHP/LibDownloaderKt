@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item android:id="@+id/main_menu_dictionary"
-        android:icon="@drawable/ic_translate_white_24dp"
-        app:showAsAction="never"
-        android:title="@string/main_menu_item_dictionary_text" />
-
     <item android:id="@+id/main_menu_orders"
         android:icon="@drawable/ic_description_white_24dp"
         app:showAsAction="ifRoom"
@@ -18,6 +13,11 @@
         android:icon="@drawable/ic_file_download_white_24dp"
         app:showAsAction="ifRoom"
         android:title="@string/main_menu_item_downloads_text" />
+
+    <item android:id="@+id/main_menu_dictionary"
+        android:icon="@drawable/ic_translate_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/main_menu_item_dictionary_text" />
 
     <item android:id="@+id/main_menu_exit"
         android:title="@string/main_menu_item_exit_text"

@@ -22,6 +22,7 @@
     <string name="dictionary_search_button_text">Перекласти</string>
 
     <string name="dictionary_none_result">Немає результату для %1$s</string>
+    <string name="files_manual_number">Методичка %1$s</string>
     <string name="forgot_password">Забули пароль ?</string>
     <string name="searchAuthor">Автор</string>
     <string name="searchYear">Рік видання</string>

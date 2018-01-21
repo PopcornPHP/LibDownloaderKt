@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/btn_sign_in"
+                android:background="@drawable/btn_search_main"
                 android:text="@string/action_sign_in"
                 android:textColor="@color/colorBlack" />
 
@@ -97,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_sign_in"
+                android:background="@drawable/btn_search_main"
                 android:text="@string/register_button_text"
                 android:textColor="@color/colorBlack" />
 
