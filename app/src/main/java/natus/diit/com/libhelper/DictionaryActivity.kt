@@ -13,6 +13,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 
+/**
+ * Class which manipulates with dictionary
+ */
 class DictionaryActivity : AppCompatActivity() {
 
     private var etDictionarySearch: EditText? = null
@@ -36,8 +39,10 @@ class DictionaryActivity : AppCompatActivity() {
 
         domain = preferences!!.domain
 
+        //Spinner for changing translate direction
         translateDirectionSpinner = findViewById(R.id.translate_direction_spinner) as Spinner
 
+        //Adapter for spinner
         val adapter = ArrayAdapter.createFromResource(this,
                 R.array.dictionary_translate_direction, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -55,7 +60,8 @@ class DictionaryActivity : AppCompatActivity() {
             preferences!!.savedDictionarySearch = search
             preferences!!.savedTranslateDirection = translateDirection
 
-            val intent = Intent(this@DictionaryActivity, TranslationsListActivity::class.java)
+            val intent = Intent(this@DictionaryActivity,
+                    TranslationsListActivity::class.java)
             startActivity(intent)
         }
 

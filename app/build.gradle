@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+
 android {
     compileSdkVersion 25
     defaultConfig {
         applicationId "natus.diit.com.libhelper"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 10
-        versionName "3.1s"
+        versionCode 15
+        versionName "4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

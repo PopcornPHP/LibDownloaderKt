@@ -20,7 +20,9 @@ import java.io.FileInputStream
 import java.net.URLConnection
 import java.util.*
 
-
+/**
+ * Class which manipulates with downloaded books
+ */
 class FilesListActivity : AppCompatActivity(),
         FilesAdapter.FilesAdapterListener {
 
@@ -39,6 +41,7 @@ class FilesListActivity : AppCompatActivity(),
 
         mAdapter = FilesAdapter(this, files, this)
 
+        //LinearLayout for RecyclerView
         val mLayoutManager = LinearLayoutManager(applicationContext)
         recyclerView.layoutManager = mLayoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -48,17 +51,23 @@ class FilesListActivity : AppCompatActivity(),
         actionModeCallback = ActionModeCallback()
 
         fetchDownloadedBooks()
-
     }
 
+    /**
+     * Fetches downloaded files
+     */
     private fun fetchDownloadedBooks() {
         val folder = booksFolder
-        Log.i(LOG, "${folder.listFiles()}")
+
+        //Add all downloaded files to ArrayList
         files += folder.listFiles()
 
         mAdapter!!.notifyDataSetChanged()
     }
 
+    /**
+     * ActionMode for handling actions
+     */
     private inner class ActionModeCallback : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             mode.menuInflater.inflate(R.menu.menu_files_action_mode, menu)
@@ -83,6 +92,9 @@ class FilesListActivity : AppCompatActivity(),
             }
         }
 
+        /**
+         * Delete selected files
+         */
         private fun deleteFiles() {
             val selectedItemPositions = mAdapter!!.getSelectedItems()
             for (i in selectedItemPositions.size - 1 downTo 0) {
@@ -120,6 +132,9 @@ class FilesListActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Calls when list`s item is clicked
+     */
     override fun onMessageRowClicked(position: Int) {
         if (mAdapter!!.selectedItemCount > 0) {
             enableActionMode(position)
@@ -139,7 +154,7 @@ class FilesListActivity : AppCompatActivity(),
                         applicationContext.
                                 packageName + PROVIDERS_PATH, file)
                 myIntent.data = uri
-                startActivity(myIntent)
+                startActivity(myIntent) //Open file
             }
         }
     }

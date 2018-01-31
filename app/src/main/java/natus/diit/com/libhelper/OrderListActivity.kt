@@ -21,6 +21,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * Class which manipulates with orders
+ */
 class OrderListActivity : AppCompatActivity() {
 
     private var orders: List<Order?>? = null
@@ -57,6 +60,10 @@ class OrderListActivity : AppCompatActivity() {
         fetchOrdersList()
     }
 
+    /**
+     * Cancels order of given book
+     * @param bookID Id of book, the order of which we want to cancel
+     */
     private fun cancelOrder(bookID: Int?) {
         val call = libBookApi?.cancelOrder(receivedCookie, bookID)
 
@@ -78,6 +85,9 @@ class OrderListActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Gets order list from server
+     */
     private fun fetchOrdersList() {
         val call = libBookApi?.getAllOrders(receivedCookie)
         call?.enqueue(object : Callback<OrderJsonResponse> {
@@ -123,6 +133,9 @@ class OrderListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Adapter for ListView which contains order list
+     */
     private inner class OrderListAdapter(orders: List<Order?>?)
         : ArrayAdapter<Order>(this@OrderListActivity, android.R.layout.simple_list_item_1, orders) {
 
@@ -150,6 +163,7 @@ class OrderListActivity : AppCompatActivity() {
                 titleBookTv.text = title
             }
 
+            //Status for showing up
             val readableStatus: String
             readableStatus = when (currentOrder.status) {
                 "new" -> "нове замовлення"
@@ -162,8 +176,6 @@ class OrderListActivity : AppCompatActivity() {
                 else -> "невідомий"
             }
 
-            //titleBookTv.text = currentBook.name
-
             orderStatusTv = retView.findViewById(R.id.orderList_item_tv_orderStatus) as TextView
             orderStatusTv.text = readableStatus
 
@@ -172,6 +184,10 @@ class OrderListActivity : AppCompatActivity() {
             return retView
         }
 
+        /**
+         * Sets relevant color for order`s status
+         * @param _orderStatus Current order`s status
+         */
         private fun setOrderStatusColor(_orderStatus: String?) {
             when (_orderStatus) {
                 "очікує отримання" ->

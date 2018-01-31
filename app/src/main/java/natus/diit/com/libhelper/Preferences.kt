@@ -23,13 +23,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-
-//Auxiliary class which works with SharesPreferences
-//and contains some global variables
+//Constant for logging
 const val LOG = "MyLog"
+
+//Path to content provider
 const val PROVIDERS_PATH = ".natus.diit.com.libhelper.provider"
+
+//Folder for downloaded books
 val booksFolder = File(Environment.getExternalStorageDirectory()
-.toString() + File.separator + "DNURTBooks")
+        .toString() + File.separator + "DNURTBooks")
 
 internal var libBookApi: ApiInterface? = null
 fun showSnackBar(view: View, text: String = "Перевірте інтернет з'єднання"): Snackbar {
@@ -47,19 +49,29 @@ fun setToolbar(activity: AppCompatActivity,
     myToolbar?.title = activity.getString(toolbarTitleRes)
     activity.setSupportActionBar(myToolbar)
 
+    //Set arrow for toolbar
     val upArrow: Drawable = ContextCompat.getDrawable(activity, R.drawable.ic_arrow_back_white_24dp)
     upArrow.setColorFilter(activity.resources.getColor(arrowColorRes), PorterDuff.Mode.SRC_ATOP)
     activity.supportActionBar?.setHomeAsUpIndicator(upArrow)
 
+    //Activate back arrow on toolbar
     if (NavUtils.getParentActivityName(activity) != null) {
         activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 }
 
+
+/**
+ * Auxiliary class which works with SharesPreferences
+ * and contains some global variables
+ */
 class Preferences : Application {
+    //DNURT domain, must be deleted in future
     val domain = "https://library.diit.edu.ua"
     private lateinit var prefs: SharedPreferences
     private val sharedPrefsFile = "MyPreferences"
+
+    //URL to API
     private val BASE_URL = "https://library.diit.edu.ua/api/"
     private lateinit var retrofit: Retrofit
 
@@ -67,6 +79,7 @@ class Preferences : Application {
     override fun onCreate() {
         super.onCreate()
 
+        //Create retrofit api
         retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -193,6 +206,11 @@ class Preferences : Application {
         savedPassword = prefs.getString("password", "")
     }
 
+    /**
+     * Get json from server
+     * works only with Dictionary
+     * must be deleted in future
+     */
     fun getJSONFromServer(url: URL, cookie: String?): String {
         val urlConnection: HttpsURLConnection
         val reader: BufferedReader
@@ -220,7 +238,7 @@ class Preferences : Application {
         return buffer.toString()
     }
 
-
+    //Must be deleted in future
     fun getJSONFromServer(url: URL): String {
 
         val urlConnection: HttpURLConnection

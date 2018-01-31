@@ -15,13 +15,16 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import natus.diit.com.libhelper.R.string.checkLogin
 import natus.diit.com.libhelper.model.user.CheckUserResponse
 import natus.diit.com.libhelper.model.user.LogOutResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
+/**
+ * Class which represents search activity
+ */
 class MainActivity : AppCompatActivity() {
 
     private var etSearchByNumber: EditText? = null
@@ -48,12 +51,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //May be app needs suspending
         //suspendApp()
 
         preferences = Preferences(this)
 
         setContentView(R.layout.activity_main)
 
+        //On every app`s start
         createBooksFolder()
         setToolbar()
         checkLogin()
@@ -73,11 +78,15 @@ class MainActivity : AppCompatActivity() {
             searchByBookName = etSearchByBookName!!.text.toString()
 
             val intent = Intent(this@MainActivity, BooksListActivity::class.java)
+
+            //Putting entered requests to Intent`s extra
             intent.putExtra(SEARCH_AUTHOR, searchByAuthor)
             intent.putExtra(SEARCH_NUMBER, searchByNumber)
             intent.putExtra(SEARCH_KEYWORDS, searchByNumber)
             intent.putExtra(SEARCH_YEAR, searchByYear)
             intent.putExtra(SEARCH_BOOK_NAME, searchByBookName)
+
+            //Starts BookListActivity
             startActivity(intent)
         }
         btnSearch.setOnTouchListener { v, event ->
@@ -92,18 +101,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Creates dir for books if such does not exist
+     */
     private fun createBooksFolder() {
         if (!booksFolder.exists()) {
             booksFolder.mkdir()
         }
     }
 
+    /**
+     * Blocks app and shows information about suspending
+     */
     fun suspendApp() {
         val builder: AlertDialog.Builder
         builder = AlertDialog.Builder(this@MainActivity)
         builder.setNegativeButton("Ок") { dialog, which -> finish() }
-        builder.setOnCancelListener { finish() }
 
+        builder.setOnCancelListener { finish() }
         builder.setOnDismissListener { finish() }
 
         builder.setTitle("Інформація")
@@ -112,7 +127,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+    /**
+     * Starts LoginActivity if user`s not signed in
+     */
     private fun checkLogin() {
         receivedCookie = preferences.savedReceivedCookie
         isRemembered = preferences.savedIsRemembered
@@ -123,7 +140,6 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<CheckUserResponse>,
                                     response: Response<CheckUserResponse>) {
                 val resp = response.body().flag
-                Log.i(LOG, "response = $resp")
 
                 if (resp == false) {
                     val intent = Intent(this@MainActivity, LoginActivity::class.java)
@@ -148,6 +164,10 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Starts relevant activities
+     * @param item Item which was clicked
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
@@ -180,6 +200,9 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(myToolbar)
     }
 
+    /**
+     * Exits application
+     */
     private fun logOut() {
         val call = libBookApi?.logOut(receivedCookie)
 
@@ -243,7 +266,8 @@ class MainActivity : AppCompatActivity() {
                                 finish()
                             }
                             else -> {
-                                Toast.makeText(this@MainActivity, "Не вдалося вийти з акаунту",
+                                Toast.makeText(this@MainActivity,
+                                        "Не вдалося вийти з акаунту",
                                         Toast.LENGTH_SHORT).show()
                             }
                         }

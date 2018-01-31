@@ -12,7 +12,9 @@ import org.json.JSONObject
 import java.net.URL
 import java.net.URLEncoder
 
-
+/**
+ * Class which manipulates with translations list
+ */
 class TranslationsListActivity : AppCompatActivity() {
 
     private var receivedCookie: String? = null
@@ -41,6 +43,7 @@ class TranslationsListActivity : AppCompatActivity() {
 
         domain = preferences!!.domain
 
+        //Start AsyncTask class
         DictionarySearchTask().execute()
     }
 
@@ -68,7 +71,6 @@ class TranslationsListActivity : AppCompatActivity() {
                         "&direction=" + translateDirection + "&take=100")
 
                 resultJson = preferences!!.getJSONFromServer(url, receivedCookie)
-                Log.i(LOG, "JSON " + resultJson)
 
             } catch (e: Exception) {
                 showSnackBar(findViewById(R.id.translations_list_container)).show()
@@ -99,6 +101,7 @@ class TranslationsListActivity : AppCompatActivity() {
                         }
                     }
 
+                    //Adapter for ListView
                     val adapter = ArrayAdapter<String>(this@TranslationsListActivity,
                             android.R.layout.simple_list_item_1,
                             names)

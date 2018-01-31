@@ -3,6 +3,6 @@ package natus.diit.com.libhelper.provider
 import android.support.v4.content.FileProvider
 
 /**
- * class for providing access to internal dir (for android.version >= 7.0)
+ * Class for providing access to internal dir (for android.version >= 7.0)
  */
 class GenericFileProvider : FileProvider()

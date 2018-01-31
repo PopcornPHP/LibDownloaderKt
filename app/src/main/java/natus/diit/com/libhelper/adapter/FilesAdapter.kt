@@ -14,7 +14,7 @@ import java.io.File
 import java.util.*
 
 /**
- * Adapter class for doanloaded manuals
+ * Adapter class for downloaded manuals
  */
 
 class FilesAdapter(private val mContext: Context,
@@ -74,6 +74,10 @@ class FilesAdapter(private val mContext: Context,
         return files.size
     }
 
+    /**
+     * Enable or disable item`s selection
+     * @param pos Clicked item`s position
+     */
     fun toggleSelection(pos: Int) {
         currentSelectedIndex = pos
         if (selectedItems.get(pos, false)) {

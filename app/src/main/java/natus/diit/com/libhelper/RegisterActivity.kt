@@ -9,7 +9,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
 
-
+/**
+ * Class which works with registration
+ * Registration representet as simple WebView
+ */
 class RegisterActivity : AppCompatActivity() {
 
     private var mRegisterWebView: WebView? = null

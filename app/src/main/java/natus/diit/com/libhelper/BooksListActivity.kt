@@ -25,7 +25,9 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-
+/**
+ * Class which manipulates with books list
+ */
 class BooksListActivity : AppCompatActivity() {
 
     private var booksList: ListView? = null
@@ -48,6 +50,7 @@ class BooksListActivity : AppCompatActivity() {
 
         preferences = Preferences(this)
 
+        //init fields with extra
         setSearchFields()
 
         booksList = findViewById(R.id.list_books) as ListView
@@ -79,10 +82,14 @@ class BooksListActivity : AppCompatActivity() {
             Book.showBookInfo(lb, builder)
         }
 
-
+        //get book`s list from server
         fetchBooksList()
     }
 
+    /**
+     *Receive extra from MainActivity
+     * and set all fields
+     */
     private fun setSearchFields() {
         searchByYear = intent.getStringExtra(MainActivity.SEARCH_YEAR)
         searchByNumber = intent.getStringExtra(MainActivity.SEARCH_NUMBER)
@@ -92,6 +99,11 @@ class BooksListActivity : AppCompatActivity() {
         receivedCookie = preferences.savedReceivedCookie
     }
 
+    /**
+     * Creates order for given book
+     * @param bookId Id of book to order
+     * @param currentBranch Branch where book can be ordered
+     */
     private fun createOrder(bookId: Int, currentBranch: Int?) {
         val call = libBookApi?.createOrder(
                 receivedCookie,
@@ -136,6 +148,9 @@ class BooksListActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Fetching books from server
+     */
     private fun fetchBooksList() {
 
         val call = libBookApi?.getAllBooks(receivedCookie,
@@ -165,6 +180,9 @@ class BooksListActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Adapter class for managing books list showing
+     */
     private inner class BookListAdapter(var books: List<Book?>?)
         : ArrayAdapter<Book>(this@BooksListActivity, android.R.layout.simple_list_item_1, books) {
 
@@ -203,6 +221,9 @@ class BooksListActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * AsyncTask class witch downloads books
+     */
     private inner class FileDownloader internal constructor(internal var file: File)
         : AsyncTask<String, Int, File>() {
         private var m_error: Exception? = null
@@ -270,14 +291,13 @@ class BooksListActivity : AppCompatActivity() {
             return null
         }
 
-        //обновляем progressDialog
+        //updating progressDialog
         override fun onProgressUpdate(vararg values: Int?) {
             if (isCancelled) progressDialog.hide()
             val val1: Float = values[0]?.toFloat() ?: 0F
             val val2: Float = values[1]?.toFloat() ?: 0F
-            Log.i(LOG, "val1 = $val1, val2 = $val2")
+
             progressDialog.progress = ((val1 / val2) * 100).toInt()
-            Log.i(LOG, "rez = ${((val1 / val2) * 100).toInt()}")
         }
 
 
@@ -288,13 +308,16 @@ class BooksListActivity : AppCompatActivity() {
                 return
             }
 
-            // закрываем прогресс и удаляем временный файл
             progressDialog.hide()
-            Toast.makeText(this@BooksListActivity, "Книгу було завантажено", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@BooksListActivity, "Книгу було завантажено",
+                    Toast.LENGTH_SHORT).show()
         }
 
     }
 
+    /**
+     * Calls when menu`s item triggered
+     */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             android.R.id.home -> {
@@ -307,6 +330,9 @@ class BooksListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Starts file`s download
+     */
     private fun downloadFile(url: String?, file: File) {
         val fl = FileDownloader(file)
         fl.execute(url)
@@ -317,6 +343,9 @@ class BooksListActivity : AppCompatActivity() {
         progressBar?.visibility = View.INVISIBLE
     }
 
+    /**
+     * Shows message if server is offline or books have not found
+     */
     private fun checkServerStatus(len: Int) {
         if (len == 0) {
             val builder: AlertDialog.Builder = AlertDialog.Builder(this@BooksListActivity)

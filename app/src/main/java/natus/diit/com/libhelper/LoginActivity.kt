@@ -18,7 +18,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
+/**
+ * Class which works with login
+ */
 class LoginActivity : AppCompatActivity() {
 
     private var signInButton: Button? = null
@@ -88,70 +90,77 @@ class LoginActivity : AppCompatActivity() {
             false
         }
 
+        //Starts register activity
         registerButton.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
             startActivity(intent)
         }
     }
 
+    /**
+     *Checks user`s log in
+     */
+    private fun logIn() {
+        val call = libBookApi?.signIn(cardNumber, password, isRemembered)
+        call?.enqueue(object : Callback<CheckUserLogIn> {
+            override fun onResponse(call: Call<CheckUserLogIn>,
+                                    response: Response<CheckUserLogIn>) {
+                //Get headers from server
+                val headers = response.headers()
+                preferences.savedReceivedCookie = headers["Set-Cookie"]
 
-private fun logIn() {
-    val call = libBookApi?.signIn(cardNumber, password, isRemembered)
-    call?.enqueue(object : Callback<CheckUserLogIn> {
-        override fun onResponse(call: Call<CheckUserLogIn>,
-                                response: Response<CheckUserLogIn>) {
-            val headers = response.headers()
-            preferences.savedReceivedCookie = headers["Set-Cookie"]
+                val user = response.body().user
 
-            val user = response.body().user
-
-            if (user != null) {
-                isAuthorized = true
-            } else {
-                authorizationError = when {
-                    password == "" -> "Ви не ввели пароль"
-                    cardNumber == "" -> "Ви не ввели читацький номер"
-                    else -> "Ви вказали невірні дані"
+                if (user != null) {
+                    isAuthorized = true
+                } else {
+                    authorizationError = when {
+                        password == "" -> "Ви не ввели пароль"
+                        cardNumber == "" -> "Ви не ввели читацький номер"
+                        else -> "Ви вказали невірні дані"
+                    }
+                    isAuthorized = false
                 }
-                isAuthorized = false
+
+                preferences.savedIsAuthorized = isAuthorized
+
+                if (isAuthorized) {
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    val mySnackbar = Snackbar.make(findViewById(R.id.passw_login_form),
+                            authorizationError, Snackbar.LENGTH_LONG)
+
+                    mySnackbar.show()
+                }
             }
 
-            preferences.savedIsAuthorized = isAuthorized
-
-            if (isAuthorized) {
-                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                val mySnackbar = Snackbar.make(findViewById(R.id.passw_login_form),
-                        authorizationError, Snackbar.LENGTH_LONG)
-
-                mySnackbar.show()
+            override fun onFailure(call: Call<CheckUserLogIn>, t: Throwable) {
+                Log.e(LOG, "LoginActivity Error + " + t.message)
+                showSnackBar(findViewById(R.id.passw_login_form)).show()
             }
-        }
-
-        override fun onFailure(call: Call<CheckUserLogIn>, t: Throwable) {
-            Log.e(LOG, "LoginActivity Error + " + t.message)
-            showSnackBar(findViewById(R.id.passw_login_form)).show()
-        }
-    })
-}
-
-private fun setToolbar() {
-    val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
-    myToolbar?.title = getString(R.string.title_activity_authorization)
-    setSupportActionBar(myToolbar)
-}
-
-private fun requestWriteDataPermission() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                PERMISSION_REQUEST_CODE)
+        })
     }
-}
 
-companion object {
-    private val PERMISSION_REQUEST_CODE = 10
-}
+    private fun setToolbar() {
+        val myToolbar = findViewById(R.id.my_toolbar) as Toolbar?
+        myToolbar?.title = getString(R.string.title_activity_authorization)
+        setSupportActionBar(myToolbar)
+    }
+
+    /**
+     * Checks permission for writing to external storage
+     */
+    private fun requestWriteDataPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    companion object {
+        private val PERMISSION_REQUEST_CODE = 10
+    }
 
 }
