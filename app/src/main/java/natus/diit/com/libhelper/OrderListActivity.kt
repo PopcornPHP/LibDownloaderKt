@@ -101,6 +101,9 @@ class OrderListActivity : AppCompatActivity() {
 
                 orderList!!.adapter = adapter
 
+                //Hide progress bar
+                hideProgressBar()
+
                 //Maybe server is off or list is empty
                 checkServerStatus(orders?.size!!)
 
@@ -122,15 +125,20 @@ class OrderListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        return when (item!!.itemId) {
             android.R.id.home -> {
                 if (NavUtils.getParentActivityName(this) != null) {
                     NavUtils.navigateUpFromSameTask(this)
                 }
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun hideProgressBar() {
+        val progressBar = findViewById(R.id.book_list_progress)
+        progressBar?.visibility = View.INVISIBLE
     }
 
     /**
